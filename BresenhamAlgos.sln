@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BresenhamAlgos", "BresenhamAlgos\BresenhamAlgos.vcxproj", "{7215B3E8-3ADB-4BCC-8D20-E63912ECEDAE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7215B3E8-3ADB-4BCC-8D20-E63912ECEDAE}.Debug|x64.ActiveCfg = Debug|x64
+		{7215B3E8-3ADB-4BCC-8D20-E63912ECEDAE}.Debug|x64.Build.0 = Debug|x64
+		{7215B3E8-3ADB-4BCC-8D20-E63912ECEDAE}.Debug|x86.ActiveCfg = Debug|Win32
+		{7215B3E8-3ADB-4BCC-8D20-E63912ECEDAE}.Debug|x86.Build.0 = Debug|Win32
+		{7215B3E8-3ADB-4BCC-8D20-E63912ECEDAE}.Release|x64.ActiveCfg = Release|x64
+		{7215B3E8-3ADB-4BCC-8D20-E63912ECEDAE}.Release|x64.Build.0 = Release|x64
+		{7215B3E8-3ADB-4BCC-8D20-E63912ECEDAE}.Release|x86.ActiveCfg = Release|Win32
+		{7215B3E8-3ADB-4BCC-8D20-E63912ECEDAE}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B699D5FE-B921-4C1E-952A-CDFA23859E0A}
+	EndGlobalSection
+EndGlobal
