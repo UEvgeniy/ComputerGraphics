@@ -131,9 +131,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bresenham.cpp" />
     <ClCompile Include="MainWinForm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bresenham.h" />
     <ClInclude Include="MainWinForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -142,6 +144,9 @@
     <EmbeddedResource Include="MainWinForm.resx">
       <DependentUpon>MainWinForm.h</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BresenhamAlgos.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

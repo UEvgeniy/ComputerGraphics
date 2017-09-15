@@ -1,6 +1,5 @@
 #pragma once
 
-
 namespace BresenhamAlgos {
 
 	using namespace System;
@@ -17,63 +16,33 @@ namespace BresenhamAlgos {
 	public ref class MainWinForm : public System::Windows::Forms::Form {
 
 	public:
-		MainWinForm(void)
-		{
-			InitializeComponent();
-
-			// Bitmap
-			bm = gcnew Bitmap(pictureBox->Width, pictureBox->Height);
-			pictureBox->Image = bm;
-
-			// Points clicked on the picture box
-			points = gcnew array<Point>(3);
-
-			// Group of toolMenuItems (only one can be checked)
-			items = gcnew List<ToolStripMenuItem^>();
-			items->Add(lineItem);
-			items->Add(circleItem);
-			items->Add(ellipseItem);
-
-			lineItem->PerformClick();
-
-			// todo replace
-			//Graphics^ gr = Graphics::FromImage(bm);
-			//gr->Clear(Color::Aqua);
-			//gr->DrawLine(Pens::Black, 20, 20, 40, 50);
-			//delete gr;
-			//pictureBox->Refresh();
-
-			//
-			//TODO: Add the constructor code here
-			//
-
-		}
+		MainWinForm(void);
 
 	protected:
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		~MainWinForm()
-		{
-			if (components)
-			{
-				delete components;
-			}
-		}
+		~MainWinForm();
 
+#pragma region Fields - Controls
 	private: 
 		System::Windows::Forms::MenuStrip^			menuStrip;
 		System::Windows::Forms::ToolStripMenuItem^  fieldItem;
 		System::Windows::Forms::ToolStripMenuItem^  helpItem;
-
 		System::Windows::Forms::ToolStripMenuItem^  addItem;
 		System::Windows::Forms::ToolStripMenuItem^  lineItem;
 		System::Windows::Forms::ToolStripMenuItem^  circleItem;
 		System::Windows::Forms::ToolStripMenuItem^  ellipseItem;
-
 		System::Windows::Forms::ToolStripMenuItem^  clearItem;
 		System::Windows::Forms::ToolStripMenuItem^  aboutItem;
-		System::Windows::Forms::PictureBox^			pictureBox;
+
+		System::Windows::Forms::PictureBox^		pictureBox;
+		System::Windows::Forms::GroupBox^		groupBox;
+		System::Windows::Forms::Label^			labelW;
+		System::Windows::Forms::Label^			labelH;
+		System::Windows::Forms::NumericUpDown^	numericWidth;
+		System::Windows::Forms::NumericUpDown^	numericHeight;
+#pragma endregion
 
 	private:
 		Bitmap^ bm;
@@ -81,7 +50,6 @@ namespace BresenhamAlgos {
 		List<ToolStripMenuItem^>^ items;
 		int maximumClicks;
 		int currentClicks;
-
 
 	private:
 		/// <summary>
@@ -106,8 +74,16 @@ namespace BresenhamAlgos {
 			this->helpItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->aboutItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->pictureBox = (gcnew System::Windows::Forms::PictureBox());
+			this->groupBox = (gcnew System::Windows::Forms::GroupBox());
+			this->labelW = (gcnew System::Windows::Forms::Label());
+			this->labelH = (gcnew System::Windows::Forms::Label());
+			this->numericWidth = (gcnew System::Windows::Forms::NumericUpDown());
+			this->numericHeight = (gcnew System::Windows::Forms::NumericUpDown());
 			this->menuStrip->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox))->BeginInit();
+			this->groupBox->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericWidth))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericHeight))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// menuStrip
@@ -135,35 +111,36 @@ namespace BresenhamAlgos {
 					this->ellipseItem
 			});
 			this->addItem->Name = L"addItem";
-			this->addItem->Size = System::Drawing::Size(211, 30);
+			this->addItem->Size = System::Drawing::Size(175, 30);
 			this->addItem->Text = L"Add";
 			// 
 			// lineItem
 			// 
 			this->lineItem->Name = L"lineItem";
-			this->lineItem->Size = System::Drawing::Size(211, 30);
+			this->lineItem->Size = System::Drawing::Size(146, 30);
 			this->lineItem->Text = L"Line";
 			this->lineItem->Click += gcnew System::EventHandler(this, &MainWinForm::lineItem_Click);
 			// 
 			// circleItem
 			// 
 			this->circleItem->Name = L"circleItem";
-			this->circleItem->Size = System::Drawing::Size(211, 30);
+			this->circleItem->Size = System::Drawing::Size(146, 30);
 			this->circleItem->Text = L"Circle";
 			this->circleItem->Click += gcnew System::EventHandler(this, &MainWinForm::circleItem_Click);
 			// 
 			// ellipseItem
 			// 
 			this->ellipseItem->Name = L"ellipseItem";
-			this->ellipseItem->Size = System::Drawing::Size(211, 30);
+			this->ellipseItem->Size = System::Drawing::Size(146, 30);
 			this->ellipseItem->Text = L"Ellipse";
 			this->ellipseItem->Click += gcnew System::EventHandler(this, &MainWinForm::ellipseItem_Click);
 			// 
 			// clearItem
 			// 
 			this->clearItem->Name = L"clearItem";
-			this->clearItem->Size = System::Drawing::Size(211, 30);
-			this->clearItem->Text = L"Clear";
+			this->clearItem->Size = System::Drawing::Size(175, 30);
+			this->clearItem->Text = L"Clear filed";
+			this->clearItem->Click += gcnew System::EventHandler(this, &MainWinForm::clearItem_Click);
 			// 
 			// helpItem
 			// 
@@ -184,16 +161,68 @@ namespace BresenhamAlgos {
 			this->pictureBox->Location = System::Drawing::Point(0, 33);
 			this->pictureBox->Margin = System::Windows::Forms::Padding(4);
 			this->pictureBox->Name = L"pictureBox";
-			this->pictureBox->Size = System::Drawing::Size(771, 397);
+			this->pictureBox->Size = System::Drawing::Size(771, 410);
+			this->pictureBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::CenterImage;
 			this->pictureBox->TabIndex = 1;
 			this->pictureBox->TabStop = false;
-			this->pictureBox->Click += gcnew System::EventHandler(this, &MainWinForm::pictureBox_Click);
+			this->pictureBox->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MainWinForm::pictureBox_MouseClick);
+			// 
+			// groupBox
+			// 
+			this->groupBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
+			this->groupBox->Controls->Add(this->labelW);
+			this->groupBox->Controls->Add(this->labelH);
+			this->groupBox->Controls->Add(this->numericWidth);
+			this->groupBox->Controls->Add(this->numericHeight);
+			this->groupBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->groupBox->Location = System::Drawing::Point(420, 367);
+			this->groupBox->Name = L"groupBox";
+			this->groupBox->Size = System::Drawing::Size(338, 63);
+			this->groupBox->TabIndex = 2;
+			this->groupBox->TabStop = false;
+			this->groupBox->Text = L"Ellipse properties";
+			// 
+			// labelW
+			// 
+			this->labelW->AutoSize = true;
+			this->labelW->Location = System::Drawing::Point(196, 27);
+			this->labelW->Name = L"labelW";
+			this->labelW->Size = System::Drawing::Size(54, 20);
+			this->labelW->TabIndex = 6;
+			this->labelW->Text = L"Width:";
+			// 
+			// labelH
+			// 
+			this->labelH->AutoSize = true;
+			this->labelH->Location = System::Drawing::Point(6, 27);
+			this->labelH->Name = L"labelH";
+			this->labelH->Size = System::Drawing::Size(60, 20);
+			this->labelH->TabIndex = 5;
+			this->labelH->Text = L"Height:";
+			// 
+			// numericWidth
+			// 
+			this->numericWidth->Location = System::Drawing::Point(256, 25);
+			this->numericWidth->Name = L"numericWidth";
+			this->numericWidth->Size = System::Drawing::Size(76, 26);
+			this->numericWidth->TabIndex = 4;
+			this->numericWidth->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 20, 0, 0, 0 });
+			// 
+			// numericHeight
+			// 
+			this->numericHeight->Location = System::Drawing::Point(72, 25);
+			this->numericHeight->Name = L"numericHeight";
+			this->numericHeight->Size = System::Drawing::Size(62, 26);
+			this->numericHeight->TabIndex = 3;
+			this->numericHeight->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 40, 0, 0, 0 });
 			// 
 			// MainWinForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(771, 430);
+			this->ClientSize = System::Drawing::Size(771, 443);
+			this->Controls->Add(this->groupBox);
 			this->Controls->Add(this->pictureBox);
 			this->Controls->Add(this->menuStrip);
 			this->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
@@ -205,50 +234,32 @@ namespace BresenhamAlgos {
 			this->menuStrip->ResumeLayout(false);
 			this->menuStrip->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox))->EndInit();
+			this->groupBox->ResumeLayout(false);
+			this->groupBox->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericWidth))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericHeight))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
 
-		// Click on the picture box
 		private: 
-			System::Void pictureBox_Click(System::Object^  sender, System::EventArgs^  e) {
-
-			}
+		
+			// Click on PictureBox
+			System::Void pictureBox_MouseClick(System::Object^  sender, MouseEventArgs^  e);
 
 			// Select line
-			System::Void lineItem_Click(System::Object^  sender, System::EventArgs^  e) {
-				itemChanged((ToolStripMenuItem^)sender, 2);
-			}
+			System::Void lineItem_Click(System::Object^  sender, System::EventArgs^  e);
 			// Select circle
-			System::Void circleItem_Click(System::Object^  sender, System::EventArgs^  e) {
-				itemChanged((ToolStripMenuItem^)sender, 2);
-			}
+			System::Void circleItem_Click(System::Object^  sender, System::EventArgs^  e);
 			// Select ellipse
-			System::Void ellipseItem_Click(System::Object^  sender, System::EventArgs^  e) {
-				itemChanged((ToolStripMenuItem^)sender, 3);
-			}
+			System::Void ellipseItem_Click(System::Object^  sender, System::EventArgs^  e);
+			// Select clear field
+			System::Void clearItem_Click(System::Object^  sender, System::EventArgs^  e);
 
 			// Universal method for changing checked property
-			void itemChanged(ToolStripMenuItem^ item, int clicksToBuild) {
-				currentClicks = 0;
-				
-				if (item->Checked) {
-					return;
-				}
+			void itemChanged(ToolStripMenuItem^ item, int clicksToBuild);
 
-				maximumClicks = clicksToBuild;
-
-				// todo change
-				for (int i = 0; i < items->Count; i++) {
-					items[i]->Checked = false;
-				}
-
-				item->Checked = true;
-
-			}
-
-			///////////////////////////////////////////////////////////////////////////
 };
 }
