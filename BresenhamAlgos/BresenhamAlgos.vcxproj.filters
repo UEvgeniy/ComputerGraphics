@@ -21,6 +21,9 @@
     <ClCompile Include="Bresenham.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AboutForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWinForm.h">
@@ -28,6 +31,9 @@
     </ClInclude>
     <ClInclude Include="Bresenham.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AboutForm.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

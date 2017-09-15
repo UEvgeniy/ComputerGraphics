@@ -163,8 +163,6 @@ pair Bresenham::make_pair(int x, int y)
 	return pp;
 }
 
-
-
 int Bresenham::sign(int val)
 {
 	return (val > 0) ? (1) : ((val < 0) ? (-1) : (0));

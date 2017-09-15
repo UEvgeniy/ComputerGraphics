@@ -48,8 +48,8 @@ namespace BresenhamAlgos {
 		Bitmap^ bm;
 		array<Point>^ points;
 		List<ToolStripMenuItem^>^ items;
-		int maximumClicks;
-		int currentClicks;
+		int maximumClicks; // number of clicks required on pictureBox for drawing shape
+		int currentClicks; // current number of clicks
 
 	private:
 		/// <summary>
@@ -64,6 +64,7 @@ namespace BresenhamAlgos {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MainWinForm::typeid));
 			this->menuStrip = (gcnew System::Windows::Forms::MenuStrip());
 			this->fieldItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->addItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -110,12 +111,14 @@ namespace BresenhamAlgos {
 				this->lineItem, this->circleItem,
 					this->ellipseItem
 			});
+			this->addItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"addItem.Image")));
 			this->addItem->Name = L"addItem";
 			this->addItem->Size = System::Drawing::Size(175, 30);
 			this->addItem->Text = L"Add";
 			// 
 			// lineItem
 			// 
+			this->lineItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"lineItem.Image")));
 			this->lineItem->Name = L"lineItem";
 			this->lineItem->Size = System::Drawing::Size(146, 30);
 			this->lineItem->Text = L"Line";
@@ -123,6 +126,7 @@ namespace BresenhamAlgos {
 			// 
 			// circleItem
 			// 
+			this->circleItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"circleItem.Image")));
 			this->circleItem->Name = L"circleItem";
 			this->circleItem->Size = System::Drawing::Size(146, 30);
 			this->circleItem->Text = L"Circle";
@@ -130,6 +134,7 @@ namespace BresenhamAlgos {
 			// 
 			// ellipseItem
 			// 
+			this->ellipseItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"ellipseItem.Image")));
 			this->ellipseItem->Name = L"ellipseItem";
 			this->ellipseItem->Size = System::Drawing::Size(146, 30);
 			this->ellipseItem->Text = L"Ellipse";
@@ -137,6 +142,7 @@ namespace BresenhamAlgos {
 			// 
 			// clearItem
 			// 
+			this->clearItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"clearItem.Image")));
 			this->clearItem->Name = L"clearItem";
 			this->clearItem->Size = System::Drawing::Size(175, 30);
 			this->clearItem->Text = L"Clear filed";
@@ -151,9 +157,11 @@ namespace BresenhamAlgos {
 			// 
 			// aboutItem
 			// 
+			this->aboutItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"aboutItem.Image")));
 			this->aboutItem->Name = L"aboutItem";
-			this->aboutItem->Size = System::Drawing::Size(159, 30);
+			this->aboutItem->Size = System::Drawing::Size(211, 30);
 			this->aboutItem->Text = L"About...";
+			this->aboutItem->Click += gcnew System::EventHandler(this, &MainWinForm::aboutItem_Click);
 			// 
 			// pictureBox
 			// 
@@ -225,11 +233,15 @@ namespace BresenhamAlgos {
 			this->Controls->Add(this->groupBox);
 			this->Controls->Add(this->pictureBox);
 			this->Controls->Add(this->menuStrip);
+			this->DoubleBuffered = true;
 			this->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MainMenuStrip = this->menuStrip;
 			this->Margin = System::Windows::Forms::Padding(4);
+			this->MaximizeBox = false;
 			this->Name = L"MainWinForm";
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"BresenhamAlgos";
 			this->menuStrip->ResumeLayout(false);
 			this->menuStrip->PerformLayout();
@@ -261,5 +273,6 @@ namespace BresenhamAlgos {
 			// Universal method for changing checked property
 			void itemChanged(ToolStripMenuItem^ item, int clicksToBuild);
 
+private: System::Void aboutItem_Click(System::Object^  sender, System::EventArgs^  e);
 };
 }

@@ -1,6 +1,7 @@
 #include "MainWinForm.h"
 #include <Windows.h>
 #include "Bresenham.h"
+#include "AboutForm.h"
 
 using namespace BresenhamAlgos; 
 
@@ -122,6 +123,11 @@ inline void BresenhamAlgos::MainWinForm::itemChanged(ToolStripMenuItem ^ item, i
 
 	groupBox->Visible = ellipseItem->Checked;
 
+}
+
+inline System::Void BresenhamAlgos::MainWinForm::aboutItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	AboutForm^ a = gcnew AboutForm();
+	a->ShowDialog();
 }
 
 inline System::Void BresenhamAlgos::MainWinForm::clearItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
