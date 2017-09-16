@@ -269,10 +269,21 @@ namespace BresenhamAlgos {
 			System::Void ellipseItem_Click(System::Object^  sender, System::EventArgs^  e);
 			// Select clear field
 			System::Void clearItem_Click(System::Object^  sender, System::EventArgs^  e);
+			// Select about
+			System::Void aboutItem_Click(System::Object^  sender, System::EventArgs^  e);
 
 			// Universal method for changing checked property
 			void itemChanged(ToolStripMenuItem^ item, int clicksToBuild);
 
-private: System::Void aboutItem_Click(System::Object^  sender, System::EventArgs^  e);
+			// Length between 2 dots
+			int length(Point^ a, Point^ b);
+
+			// Drawing dot
+			void draw_dot(Graphics^ gr, int x, int y, int size);
+
+			// Draw shapes
+			void draw_shapes(Graphics^ gr, Pen^ pen);
+
+
 };
 }

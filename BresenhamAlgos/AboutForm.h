@@ -117,6 +117,10 @@ namespace BresenhamAlgos {
 
 		}
 #pragma endregion
-	private: System::Void button_Click(System::Object^  sender, System::EventArgs^  e);
+
+
+	private: 
+		// Contact button clicked
+		System::Void button_Click(System::Object^  sender, System::EventArgs^  e);
 	};
 }

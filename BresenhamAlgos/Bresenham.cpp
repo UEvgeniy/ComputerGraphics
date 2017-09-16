@@ -8,12 +8,14 @@ List<pair>^ Bresenham::buildLine(int x1, int y1, int x2, int y2)
 	int x = x1;
 	int y = y1;
 
+	// delta
 	int dx = abs(x2 - x1);
 	int dy = abs(y2 - y1);
 
 	int s1 = sign(x2 - x1);
 	int s2 = sign(y2 - y1); 
 
+	
 	bool changed = false;
 	if (dy > dx) {
 		int tmp = dy;
@@ -163,6 +165,7 @@ pair Bresenham::make_pair(int x, int y)
 	return pp;
 }
 
+// returns -1, 0 or	1 in dependence of value sign
 int Bresenham::sign(int val)
 {
 	return (val > 0) ? (1) : ((val < 0) ? (-1) : (0));
