@@ -58,6 +58,7 @@ namespace BresenhamAlgos {
 			this->button->TabIndex = 3;
 			this->button->Text = L"Contact the developer (email)";
 			this->button->UseVisualStyleBackColor = true;
+			this->button->Visible = false;
 			this->button->Click += gcnew System::EventHandler(this, &AboutForm::button_Click);
 			// 
 			// label

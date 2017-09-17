@@ -72,17 +72,14 @@ System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::Object ^
 inline System::Void BresenhamAlgos::MainWinForm::lineItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	itemChanged((ToolStripMenuItem^)sender, 2);
 }
-
 // Select circle
 inline System::Void BresenhamAlgos::MainWinForm::circleItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	itemChanged((ToolStripMenuItem^)sender, 2);
 }
-
 // Select ellipse
 inline System::Void BresenhamAlgos::MainWinForm::ellipseItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	itemChanged((ToolStripMenuItem^)sender, 1);
 }
-
 // Select about
 inline System::Void BresenhamAlgos::MainWinForm::aboutItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	AboutForm^ a = gcnew AboutForm();
@@ -135,31 +132,52 @@ inline void BresenhamAlgos::MainWinForm::draw_dot(Graphics ^ gr, int x, int y, i
 
 inline void BresenhamAlgos::MainWinForm::draw_shapes(Graphics ^ gr, Pen ^ pen)
 {
-	{
-		List<pair>^ drawn_dots;
+	List<pair>^ drawn_dots;
 
-		if (lineItem->Checked) {
-			gr->DrawLine(pen, points[0].X, points[0].Y, points[1].X, points[1].Y);
-			drawn_dots = Bresenham::buildLine(points[0].X, points[0].Y, points[1].X, points[1].Y);
-		}
-		else if (circleItem->Checked) {
-			int rad = length(points[0], points[1]);
-			gr->DrawEllipse(pen, points[0].X - rad, points[0].Y - rad, 2 * rad, 2 * rad);
-			drawn_dots = Bresenham::buildCircle(points[0].X, points[0].Y, points[1].X, points[1].Y);
-		}
-		else if (ellipseItem->Checked) {
-			gr->DrawEllipse(pen, points[0].X - (int)numericWidth->Value, points[0].Y - (int)numericHeight->Value,
-				(int)numericWidth->Value * 2, (int)numericHeight->Value * 2);
-			drawn_dots = Bresenham::buildEllipse(points[0].X, points[0].Y,
-				(int)numericWidth->Value, (int)numericHeight->Value);
-		}
+	// variable just to make code more readable
+	Point^ p1 = points[0];
+	Point^ p2 = points[1];
 
-		// Draw all points from list
-		for (int i = 0; i < drawn_dots->Count; i++) {
-			pair p = drawn_dots[i];
-			draw_dot(gr, p[0], p[1], 1);
-		}
+	if (lineItem->Checked) {
+		gr->DrawLine(pen, 
+			p1->X, p1->Y, 
+			p2->X, p2->Y);
+		drawn_dots = Bresenham::buildLine(p1->X, p1->Y, p2->X, p2->Y);
 	}
+	else if (circleItem->Checked) {
+		int rad = length(p1, p2);
+
+		gr->DrawEllipse(pen, 
+			p1->X - rad, p1->Y - rad, 
+			2 * rad, 2 * rad);
+		drawn_dots = Bresenham::buildCircle(p1->X, p1->Y, p2->X, p2->Y);
+	}
+	else if (ellipseItem->Checked) {
+
+		int width = (int)numericWidth->Value;
+		int height = (int)numericHeight->Value;
+
+		gr->DrawEllipse(pen, 
+			p1->X - width, p1->Y - height,
+			width * 2, height * 2);
+		drawn_dots = Bresenham::buildEllipse(p1->X, p1->Y, width, height);
+	}
+
+	// Draw all points from list
+	for (int i = 0; i < drawn_dots->Count; i++) {
+		pair p = drawn_dots[i];
+		draw_dot(gr, p[0], p[1], 1);
+		
+	}
+}
+
+// Button exchanging height and width values
+System::Void BresenhamAlgos::MainWinForm::exchangeButton_Click(System::Object ^ sender, System::EventArgs ^ e)
+{
+	Decimal tmp = numericHeight->Value;
+	numericHeight->Value = numericWidth->Value;
+	numericWidth->Value = tmp;
+
 }
 
 

@@ -921,6 +921,17 @@
         hmq7kGRcpMjwWL+7/J3yd4sxkwhBAQAAfuWXX/4H8gVVuzZV+s8AAAAASUVORK5CYII=
 </value>
   </data>
+  <data name="exchangeButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1
+        MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAACxMAAAsTAQCanBgAAAEYSURBVDhPldO/LgRRGIbx40+n
+        EhuaVYpkxQZxAa5Av4lER7gG20i4AiUFoUdJw+4FkFC5AQqFTqHgeXZnxpcZG9k3+W3mzMw5+51vz6Z/
+        soiN/uVwmcMn9jHmjUEZxTwOcYl7fGdOUEMlrn6AL+Qvl51iBEUW8Ib40iOewriDZRSZwTN8+IFjtDCN
+        OqzgHFPI45bSNpx0hQZiKU20Md4b/WbHDxtwgwkHpZQnGMt1G+kBS16U8tckF7/FnYPe14Y4YQ9xMcu3
+        gddwW1vobzSLv9MFbMhkxga5kI1zkp22oUVW0IUP9YL3MNYr1lDEUs4QX4qswH2tohLL9FjlL+/iCJtY
+        R9xSJR5kD7QHe9Ybw8a/kl0ckJR+AKP/RoxCltfFAAAAAElFTkSuQmCC
+</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>25</value>
   </metadata>

@@ -50,6 +50,8 @@ namespace BresenhamAlgos {
 		List<ToolStripMenuItem^>^ items;
 		int maximumClicks; // number of clicks required on pictureBox for drawing shape
 		int currentClicks; // current number of clicks
+	private: System::Windows::Forms::Button^  exchangeButton;
+
 
 	private:
 		/// <summary>
@@ -76,6 +78,7 @@ namespace BresenhamAlgos {
 			this->aboutItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->pictureBox = (gcnew System::Windows::Forms::PictureBox());
 			this->groupBox = (gcnew System::Windows::Forms::GroupBox());
+			this->exchangeButton = (gcnew System::Windows::Forms::Button());
 			this->labelW = (gcnew System::Windows::Forms::Label());
 			this->labelH = (gcnew System::Windows::Forms::Label());
 			this->numericWidth = (gcnew System::Windows::Forms::NumericUpDown());
@@ -94,7 +97,7 @@ namespace BresenhamAlgos {
 			this->menuStrip->Location = System::Drawing::Point(0, 0);
 			this->menuStrip->Name = L"menuStrip";
 			this->menuStrip->Padding = System::Windows::Forms::Padding(8, 2, 0, 2);
-			this->menuStrip->Size = System::Drawing::Size(771, 33);
+			this->menuStrip->Size = System::Drawing::Size(878, 33);
 			this->menuStrip->TabIndex = 0;
 			this->menuStrip->Text = L"menuStrip1";
 			// 
@@ -159,7 +162,7 @@ namespace BresenhamAlgos {
 			// 
 			this->aboutItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"aboutItem.Image")));
 			this->aboutItem->Name = L"aboutItem";
-			this->aboutItem->Size = System::Drawing::Size(211, 30);
+			this->aboutItem->Size = System::Drawing::Size(159, 30);
 			this->aboutItem->Text = L"About...";
 			this->aboutItem->Click += gcnew System::EventHandler(this, &MainWinForm::aboutItem_Click);
 			// 
@@ -169,7 +172,7 @@ namespace BresenhamAlgos {
 			this->pictureBox->Location = System::Drawing::Point(0, 33);
 			this->pictureBox->Margin = System::Windows::Forms::Padding(4);
 			this->pictureBox->Name = L"pictureBox";
-			this->pictureBox->Size = System::Drawing::Size(771, 410);
+			this->pictureBox->Size = System::Drawing::Size(878, 411);
 			this->pictureBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::CenterImage;
 			this->pictureBox->TabIndex = 1;
 			this->pictureBox->TabStop = false;
@@ -178,23 +181,38 @@ namespace BresenhamAlgos {
 			// groupBox
 			// 
 			this->groupBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
+			this->groupBox->Controls->Add(this->exchangeButton);
 			this->groupBox->Controls->Add(this->labelW);
 			this->groupBox->Controls->Add(this->labelH);
 			this->groupBox->Controls->Add(this->numericWidth);
 			this->groupBox->Controls->Add(this->numericHeight);
 			this->groupBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->groupBox->Location = System::Drawing::Point(420, 367);
+			this->groupBox->Location = System::Drawing::Point(718, 325);
 			this->groupBox->Name = L"groupBox";
-			this->groupBox->Size = System::Drawing::Size(338, 63);
+			this->groupBox->Size = System::Drawing::Size(147, 106);
 			this->groupBox->TabIndex = 2;
 			this->groupBox->TabStop = false;
 			this->groupBox->Text = L"Ellipse properties";
 			// 
+			// exchangeButton
+			// 
+			this->exchangeButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->exchangeButton->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"exchangeButton.Image")));
+			this->exchangeButton->Location = System::Drawing::Point(25, 43);
+			this->exchangeButton->Name = L"exchangeButton";
+			this->exchangeButton->Size = System::Drawing::Size(39, 23);
+			this->exchangeButton->TabIndex = 3;
+			this->exchangeButton->UseVisualStyleBackColor = true;
+			this->exchangeButton->Click += gcnew System::EventHandler(this, &MainWinForm::exchangeButton_Click);
+			// 
 			// labelW
 			// 
+			this->labelW->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Right));
 			this->labelW->AutoSize = true;
-			this->labelW->Location = System::Drawing::Point(196, 27);
+			this->labelW->Location = System::Drawing::Point(21, 73);
 			this->labelW->Name = L"labelW";
 			this->labelW->Size = System::Drawing::Size(54, 20);
 			this->labelW->TabIndex = 6;
@@ -202,8 +220,10 @@ namespace BresenhamAlgos {
 			// 
 			// labelH
 			// 
+			this->labelH->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Right));
 			this->labelH->AutoSize = true;
-			this->labelH->Location = System::Drawing::Point(6, 27);
+			this->labelH->Location = System::Drawing::Point(15, 18);
 			this->labelH->Name = L"labelH";
 			this->labelH->Size = System::Drawing::Size(60, 20);
 			this->labelH->TabIndex = 5;
@@ -211,17 +231,25 @@ namespace BresenhamAlgos {
 			// 
 			// numericWidth
 			// 
-			this->numericWidth->Location = System::Drawing::Point(256, 25);
+			this->numericWidth->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->numericWidth->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 10, 0, 0, 0 });
+			this->numericWidth->Location = System::Drawing::Point(81, 71);
+			this->numericWidth->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 700, 0, 0, 0 });
 			this->numericWidth->Name = L"numericWidth";
-			this->numericWidth->Size = System::Drawing::Size(76, 26);
+			this->numericWidth->Size = System::Drawing::Size(55, 26);
 			this->numericWidth->TabIndex = 4;
 			this->numericWidth->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 20, 0, 0, 0 });
 			// 
 			// numericHeight
 			// 
-			this->numericHeight->Location = System::Drawing::Point(72, 25);
+			this->numericHeight->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->numericHeight->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 10, 0, 0, 0 });
+			this->numericHeight->Location = System::Drawing::Point(81, 16);
+			this->numericHeight->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 400, 0, 0, 0 });
 			this->numericHeight->Name = L"numericHeight";
-			this->numericHeight->Size = System::Drawing::Size(62, 26);
+			this->numericHeight->Size = System::Drawing::Size(55, 26);
 			this->numericHeight->TabIndex = 3;
 			this->numericHeight->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 40, 0, 0, 0 });
 			// 
@@ -229,7 +257,7 @@ namespace BresenhamAlgos {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(771, 443);
+			this->ClientSize = System::Drawing::Size(878, 444);
 			this->Controls->Add(this->groupBox);
 			this->Controls->Add(this->pictureBox);
 			this->Controls->Add(this->menuStrip);
@@ -240,6 +268,8 @@ namespace BresenhamAlgos {
 			this->MainMenuStrip = this->menuStrip;
 			this->Margin = System::Windows::Forms::Padding(4);
 			this->MaximizeBox = false;
+			this->MaximumSize = System::Drawing::Size(900, 500);
+			this->MinimumSize = System::Drawing::Size(900, 500);
 			this->Name = L"MainWinForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"BresenhamAlgos";
@@ -284,6 +314,6 @@ namespace BresenhamAlgos {
 			// Draw shapes
 			void draw_shapes(Graphics^ gr, Pen^ pen);
 
-
+			System::Void exchangeButton_Click(System::Object^  sender, System::EventArgs^  e);
 };
 }

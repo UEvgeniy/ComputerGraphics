@@ -8,14 +8,14 @@ List<pair>^ Bresenham::buildLine(int x1, int y1, int x2, int y2)
 	int x = x1;
 	int y = y1;
 
-	// delta
+	// deltas
 	int dx = abs(x2 - x1);
 	int dy = abs(y2 - y1);
 
 	int s1 = sign(x2 - x1);
 	int s2 = sign(y2 - y1); 
 
-	
+	// remember, if swapping x and y happened
 	bool changed = false;
 	if (dy > dx) {
 		int tmp = dy;
@@ -24,6 +24,7 @@ List<pair>^ Bresenham::buildLine(int x1, int y1, int x2, int y2)
 		changed = true;
 	}
 
+	// error
 	int e = 2 * dy - dx;
 	int i = 1;
 
@@ -110,12 +111,14 @@ List<pair>^ Bresenham::buildEllipse(int xc, int yc, int r1, int r2)
 	int a = 0;
 	int b = r2;
 
-	int h2 = r1* r1;
-	int w2 = r2 * r2;
-	int d = 4 * w2 * ((a + 1) * (a + 1)) + h2 * ((2 * b - 1) * (2 * b - 1)) - 4 * h2 * w2;
+	int h2 = r1* r1; // sqr of height
+	int w2 = r2 * r2; // sqr of width
+	int d = 4 * w2 * ((a + 1) * (a + 1)) + h2 * ((2 * b - 1) * (2 * b - 1)) - 4 * h2 * w2; // delta
 
+	// when x increases every iter (y sometimes decreases)
 	while (h2 * (2 * b - 1) > 2 * w2 * (a + 1)) {
 
+		// reflect from the first quadrant to the rest
 		res->Add(make_pair(xc + a, yc + b));
 		res->Add(make_pair(xc + a, yc - b));
 		res->Add(make_pair(xc - a, yc - b));
@@ -134,9 +137,10 @@ List<pair>^ Bresenham::buildEllipse(int xc, int yc, int r1, int r2)
 
 	d = w2 * ((2 * a + 1) * (2 * a + 1)) + 4 * h2 * ((b + 1) * (b + 1)) - 4 * h2 * w2; 
 
+	// when y decrease every iter (x sometimes increases)
 	while (b + 1 != 0) 
 	{
-
+		// reflect from the first quadrant to the rest
 		res->Add(make_pair(xc + a, yc + b));
 		res->Add(make_pair(xc + a, yc - b));
 		res->Add(make_pair(xc - a, yc - b));
