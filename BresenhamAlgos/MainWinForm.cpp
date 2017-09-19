@@ -34,6 +34,8 @@ inline BresenhamAlgos::MainWinForm::MainWinForm(void)
 
 	// Default selection
 	lineItem->PerformClick();
+	labelH->Text = "Height (max " + numericHeight->Maximum +"):";
+	labelW->Text = "Width (max " + numericWidth->Maximum + "):";
 }
 
 /// <summary>
@@ -174,9 +176,10 @@ inline void BresenhamAlgos::MainWinForm::draw_shapes(Graphics ^ gr, Pen ^ pen)
 // Button exchanging height and width values
 System::Void BresenhamAlgos::MainWinForm::exchangeButton_Click(System::Object ^ sender, System::EventArgs ^ e)
 {
+	
 	Decimal tmp = numericHeight->Value;
-	numericHeight->Value = numericWidth->Value;
-	numericWidth->Value = tmp;
+	numericHeight->Value = numericWidth->Value < numericHeight->Maximum ? numericWidth->Value : numericHeight->Maximum;
+	numericWidth->Value = tmp < numericWidth->Maximum ? tmp : numericWidth->Maximum;
 
 }
 

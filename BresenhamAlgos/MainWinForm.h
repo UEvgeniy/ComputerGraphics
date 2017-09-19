@@ -212,32 +212,32 @@ namespace BresenhamAlgos {
 			this->labelW->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->labelW->AutoSize = true;
-			this->labelW->Location = System::Drawing::Point(21, 73);
+			this->labelW->Location = System::Drawing::Point(2, 73);
 			this->labelW->Name = L"labelW";
-			this->labelW->Size = System::Drawing::Size(54, 20);
+			this->labelW->Size = System::Drawing::Size(50, 20);
 			this->labelW->TabIndex = 6;
-			this->labelW->Text = L"Width:";
+			this->labelW->Text = L"Width";
 			// 
 			// labelH
 			// 
 			this->labelH->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->labelH->AutoSize = true;
-			this->labelH->Location = System::Drawing::Point(15, 18);
+			this->labelH->Location = System::Drawing::Point(2, 18);
 			this->labelH->Name = L"labelH";
-			this->labelH->Size = System::Drawing::Size(60, 20);
+			this->labelH->Size = System::Drawing::Size(56, 20);
 			this->labelH->TabIndex = 5;
-			this->labelH->Text = L"Height:";
+			this->labelH->Text = L"Height";
 			// 
 			// numericWidth
 			// 
 			this->numericWidth->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->numericWidth->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 10, 0, 0, 0 });
-			this->numericWidth->Location = System::Drawing::Point(81, 71);
+			this->numericWidth->Location = System::Drawing::Point(95, 71);
 			this->numericWidth->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 700, 0, 0, 0 });
 			this->numericWidth->Name = L"numericWidth";
-			this->numericWidth->Size = System::Drawing::Size(55, 26);
+			this->numericWidth->Size = System::Drawing::Size(45, 26);
 			this->numericWidth->TabIndex = 4;
 			this->numericWidth->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 20, 0, 0, 0 });
 			// 
@@ -246,10 +246,10 @@ namespace BresenhamAlgos {
 			this->numericHeight->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->numericHeight->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 10, 0, 0, 0 });
-			this->numericHeight->Location = System::Drawing::Point(81, 16);
+			this->numericHeight->Location = System::Drawing::Point(95, 16);
 			this->numericHeight->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 400, 0, 0, 0 });
 			this->numericHeight->Name = L"numericHeight";
-			this->numericHeight->Size = System::Drawing::Size(55, 26);
+			this->numericHeight->Size = System::Drawing::Size(45, 26);
 			this->numericHeight->TabIndex = 3;
 			this->numericHeight->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 40, 0, 0, 0 });
 			// 
