@@ -2,6 +2,10 @@
 #include <Windows.h>
 #include "Bresenham.h"
 #include "AboutForm.h"
+#include "GLine.h"
+#include"GEllipse.h"
+#include "GCircle.h"
+
 
 using namespace BresenhamAlgos; 
 
@@ -23,8 +27,11 @@ inline BresenhamAlgos::MainWinForm::MainWinForm(void)
 	bm = gcnew Bitmap(pictureBox->Width, pictureBox->Height);
 	pictureBox->Image = bm;
 
+	// Drawed shapes
+	shapes = gcnew List<GShape^>();
+
 	// Points clicked on the picture box
-	points = gcnew array<Point>(3);
+	points = gcnew array<Point^>(3);
 
 	// Group of toolMenuItems (only one can be checked)
 	items = gcnew List<ToolStripMenuItem^>();
@@ -52,18 +59,21 @@ inline BresenhamAlgos::MainWinForm::~MainWinForm()
 // PictureBox is clicked
 System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::Object ^ sender, MouseEventArgs ^ e)
 {
+	// todo Color^ c = bm->GetPixel(e->Location.X, e->Location.Y);
+	//MessageBox::Show(c->ToString());
+
 	Graphics^ gr = Graphics::FromImage(bm);
-	Brush^ br = gcnew SolidBrush(Color::Black);
+	//Brush^ br = gcnew SolidBrush(Color::Black);
 	Pen^ pen = gcnew Pen(Color::Red);
 
-	draw_dot(gr, e->Location.X, e->Location.Y, 2);
+	draw_dot(gr, e->Location.X, e->Location.Y, colorDialog->Color, 2);
 
 	points[currentClicks] = Point(e->Location.X, e->Location.Y);
 
 	// If all required dots added to pictureBox, then build shape
 	if (++currentClicks == maximumClicks) {
 		currentClicks = 0;
-		draw_shapes(gr, pen);
+		add_draw_shape(gr, pen);
 	}
 
 	delete gr;
@@ -91,6 +101,8 @@ inline System::Void BresenhamAlgos::MainWinForm::aboutItem_Click(System::Object 
 // Select clear
 inline System::Void BresenhamAlgos::MainWinForm::clearItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	Graphics^ gr = Graphics::FromImage(bm);
+
+	shapes->Clear();
 
 	currentClicks = 0;
 	gr->Clear(pictureBox->BackColor);
@@ -128,11 +140,12 @@ int BresenhamAlgos::MainWinForm::length(Point ^ a, Point ^ b)
 }
 
 // Draw dot (rectangle)
-inline void BresenhamAlgos::MainWinForm::draw_dot(Graphics ^ gr, int x, int y, int size) {
-	gr->FillRectangle(gcnew SolidBrush(Color::Black), x - (size / 2), y - (size / 2), size, size);
+inline void BresenhamAlgos::MainWinForm::draw_dot(Graphics ^ gr, int x, int y, Color col, int size) {
+	gr->FillRectangle(gcnew SolidBrush(col), x - (size / 2), y - (size / 2), size, size);
 }
 
-inline void BresenhamAlgos::MainWinForm::draw_shapes(Graphics ^ gr, Pen ^ pen)
+// todo separate
+inline void BresenhamAlgos::MainWinForm::add_draw_shape(Graphics ^ gr, Pen ^ pen)
 {
 	List<pair>^ drawn_dots;
 
@@ -140,35 +153,48 @@ inline void BresenhamAlgos::MainWinForm::draw_shapes(Graphics ^ gr, Pen ^ pen)
 	Point^ p1 = points[0];
 	Point^ p2 = points[1];
 
+	int depth = 2; // todo 
+
+	GShape^ shape;
+
 	if (lineItem->Checked) {
-		gr->DrawLine(pen, 
+
+		shape = gcnew GLine(colorDialog->Color, depth, p1, p2);
+
+		/*gr->DrawLine(pen, 
 			p1->X, p1->Y, 
 			p2->X, p2->Y);
-		drawn_dots = Bresenham::buildLine(p1->X, p1->Y, p2->X, p2->Y);
+		drawn_dots = Bresenham::buildLine(p1->X, p1->Y, p2->X, p2->Y);*/
 	}
 	else if (circleItem->Checked) {
-		int rad = length(p1, p2);
+		shape = gcnew GCircle(colorDialog->Color, depth, p1, p2);
+		/*int rad = length(p1, p2);
 
 		gr->DrawEllipse(pen, 
 			p1->X - rad, p1->Y - rad, 
 			2 * rad, 2 * rad);
-		drawn_dots = Bresenham::buildCircle(p1->X, p1->Y, p2->X, p2->Y);
+		drawn_dots = Bresenham::buildCircle(p1->X, p1->Y, p2->X, p2->Y);*/
 	}
 	else if (ellipseItem->Checked) {
 
 		int width = (int)numericWidth->Value;
 		int height = (int)numericHeight->Value;
 
-		gr->DrawEllipse(pen, 
+		shape = gcnew GEllipse(p1, width, height);
+
+		/*gr->DrawEllipse(pen, 
 			p1->X - width, p1->Y - height,
 			width * 2, height * 2);
-		drawn_dots = Bresenham::buildEllipse(p1->X, p1->Y, width, height);
+		drawn_dots = Bresenham::buildEllipse(p1->X, p1->Y, width, height);*/
 	}
+
+	drawn_dots = shape->getPixels();
+	shapes->Add(shape);
 
 	// Draw all points from list
 	for (int i = 0; i < drawn_dots->Count; i++) {
 		pair p = drawn_dots[i];
-		draw_dot(gr, p[0], p[1], 1);
+		draw_dot(gr, p[0], p[1], colorDialog->Color, 1);
 		
 	}
 }
@@ -181,6 +207,11 @@ System::Void BresenhamAlgos::MainWinForm::exchangeButton_Click(System::Object ^ 
 	numericHeight->Value = numericWidth->Value < numericHeight->Maximum ? numericWidth->Value : numericHeight->Maximum;
 	numericWidth->Value = tmp < numericWidth->Maximum ? tmp : numericWidth->Maximum;
 
+}
+
+// Color setting
+inline System::Void BresenhamAlgos::MainWinForm::colorItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	colorDialog->ShowDialog();
 }
 
 

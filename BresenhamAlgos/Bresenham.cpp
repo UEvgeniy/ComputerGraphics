@@ -108,53 +108,53 @@ List<pair>^ Bresenham::buildEllipse(int xc, int yc, int r1, int r2)
 {
 	List<pair>^ res = gcnew List<pair>();
 
-	int a = 0;
-	int b = r2;
+	int x = 0;
+	int y = r2;
 
 	int h2 = r1* r1; // sqr of height
 	int w2 = r2 * r2; // sqr of width
-	int d = 4 * w2 * ((a + 1) * (a + 1)) + h2 * ((2 * b - 1) * (2 * b - 1)) - 4 * h2 * w2; // delta
+	int d = 4 * w2 * ((x + 1) * (x + 1)) + h2 * ((2 * y - 1) * (2 * y - 1)) - 4 * h2 * w2; // delta
 
 	// when x increases every iter (y sometimes decreases)
-	while (h2 * (2 * b - 1) > 2 * w2 * (a + 1)) {
+	while (h2 * (2 * y - 1) > 2 * w2 * (x + 1)) {
 
 		// reflect from the first quadrant to the rest
-		res->Add(make_pair(xc + a, yc + b));
-		res->Add(make_pair(xc + a, yc - b));
-		res->Add(make_pair(xc - a, yc - b));
-		res->Add(make_pair(xc - a, yc + b));
+		res->Add(make_pair(xc + x, yc + y));
+		res->Add(make_pair(xc + x, yc - y));
+		res->Add(make_pair(xc - x, yc - y));
+		res->Add(make_pair(xc - x, yc + y));
 
 		if (d < 0) {
-			a++;
-			d += 4 * w2 * (2 * a + 3);
+			x++;
+			d += 4 * w2 * (2 * x + 3);
 		}
 		else {
-			a++;
-			d = d - 8 * h2 * (b - 1) + 4 * w2 * (2 * a + 3);
-			b--;
+			x++;
+			d = d - 8 * h2 * (y - 1) + 4 * w2 * (2 * x + 3);
+			y--;
 		}
 	}
 
-	d = w2 * ((2 * a + 1) * (2 * a + 1)) + 4 * h2 * ((b + 1) * (b + 1)) - 4 * h2 * w2; 
+	d = w2 * ((2 * x + 1) * (2 * x + 1)) + 4 * h2 * ((y + 1) * (y + 1)) - 4 * h2 * w2; 
 
 	// when y decrease every iter (x sometimes increases)
-	while (b + 1 != 0) 
+	while (y + 1 != 0) 
 	{
 		// reflect from the first quadrant to the rest
-		res->Add(make_pair(xc + a, yc + b));
-		res->Add(make_pair(xc + a, yc - b));
-		res->Add(make_pair(xc - a, yc - b));
-		res->Add(make_pair(xc - a, yc + b));
+		res->Add(make_pair(xc + x, yc + y));
+		res->Add(make_pair(xc + x, yc - y));
+		res->Add(make_pair(xc - x, yc - y));
+		res->Add(make_pair(xc - x, yc + y));
 		if (d < 0) 
 		{
-			b--;
-			d += 4 * h2 * (2 * b + 3);
+			y--;
+			d += 4 * h2 * (2 * y + 3);
 		}
 		else 
 		{
-			b--;
-			d = d - 8 * w2 * (a + 1) + 4 * h2 * (2 * b + 3);
-			a++;
+			y--;
+			d = d - 8 * w2 * (x + 1) + 4 * h2 * (2 * y + 3);
+			x++;
 		}
 	}
 

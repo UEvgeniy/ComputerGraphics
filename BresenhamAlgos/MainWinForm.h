@@ -1,5 +1,7 @@
 #pragma once
-
+#include "GShape.h"
+// Sem 1. Bresenham Algos. 
+// Made by Evgeniy Urnyshev. 16 - 18 Sep, 2017.
 namespace BresenhamAlgos {
 
 	using namespace System;
@@ -27,7 +29,8 @@ namespace BresenhamAlgos {
 #pragma region Fields - Controls
 	private: 
 		System::Windows::Forms::MenuStrip^			menuStrip;
-		System::Windows::Forms::ToolStripMenuItem^  fieldItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  graphicsItem;
+
 		System::Windows::Forms::ToolStripMenuItem^  helpItem;
 		System::Windows::Forms::ToolStripMenuItem^  addItem;
 		System::Windows::Forms::ToolStripMenuItem^  lineItem;
@@ -46,11 +49,21 @@ namespace BresenhamAlgos {
 
 	private:
 		Bitmap^ bm;
-		array<Point>^ points;
+		array<Point^>^ points;
 		List<ToolStripMenuItem^>^ items;
+		List<GShape^>^ shapes;
 		int maximumClicks; // number of clicks required on pictureBox for drawing shape
 		int currentClicks; // current number of clicks
+
+
 	private: System::Windows::Forms::Button^  exchangeButton;
+	private: System::Windows::Forms::ToolStripMenuItem^  fileItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  openToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  saveToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  fillToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  settingsItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  colorItem;
+	private: System::Windows::Forms::ColorDialog^  colorDialog;
 
 
 	private:
@@ -68,12 +81,18 @@ namespace BresenhamAlgos {
 		{
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MainWinForm::typeid));
 			this->menuStrip = (gcnew System::Windows::Forms::MenuStrip());
-			this->fieldItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->fileItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->openToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->saveToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->graphicsItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->addItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->lineItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->circleItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->ellipseItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->fillToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->clearItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->settingsItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->colorItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->helpItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->aboutItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->pictureBox = (gcnew System::Windows::Forms::PictureBox());
@@ -83,6 +102,7 @@ namespace BresenhamAlgos {
 			this->labelH = (gcnew System::Windows::Forms::Label());
 			this->numericWidth = (gcnew System::Windows::Forms::NumericUpDown());
 			this->numericHeight = (gcnew System::Windows::Forms::NumericUpDown());
+			this->colorDialog = (gcnew System::Windows::Forms::ColorDialog());
 			this->menuStrip->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox))->BeginInit();
 			this->groupBox->SuspendLayout();
@@ -93,7 +113,10 @@ namespace BresenhamAlgos {
 			// menuStrip
 			// 
 			this->menuStrip->ImageScalingSize = System::Drawing::Size(24, 24);
-			this->menuStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->fieldItem, this->helpItem });
+			this->menuStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
+				this->fileItem, this->graphicsItem,
+					this->settingsItem, this->helpItem
+			});
 			this->menuStrip->Location = System::Drawing::Point(0, 0);
 			this->menuStrip->Name = L"menuStrip";
 			this->menuStrip->Padding = System::Windows::Forms::Padding(8, 2, 0, 2);
@@ -101,12 +124,37 @@ namespace BresenhamAlgos {
 			this->menuStrip->TabIndex = 0;
 			this->menuStrip->Text = L"menuStrip1";
 			// 
-			// fieldItem
+			// fileItem
 			// 
-			this->fieldItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->addItem, this->clearItem });
-			this->fieldItem->Name = L"fieldItem";
-			this->fieldItem->Size = System::Drawing::Size(54, 29);
-			this->fieldItem->Text = L"Edit";
+			this->fileItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->openToolStripMenuItem,
+					this->saveToolStripMenuItem
+			});
+			this->fileItem->Name = L"fileItem";
+			this->fileItem->Size = System::Drawing::Size(50, 29);
+			this->fileItem->Text = L"File";
+			// 
+			// openToolStripMenuItem
+			// 
+			this->openToolStripMenuItem->Name = L"openToolStripMenuItem";
+			this->openToolStripMenuItem->Size = System::Drawing::Size(153, 30);
+			this->openToolStripMenuItem->Text = L"Open...";
+			// 
+			// saveToolStripMenuItem
+			// 
+			this->saveToolStripMenuItem->Name = L"saveToolStripMenuItem";
+			this->saveToolStripMenuItem->Size = System::Drawing::Size(153, 30);
+			this->saveToolStripMenuItem->Text = L"Save...";
+			// 
+			// graphicsItem
+			// 
+			this->graphicsItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+				this->addItem,
+					this->fillToolStripMenuItem, this->clearItem
+			});
+			this->graphicsItem->Name = L"graphicsItem";
+			this->graphicsItem->Size = System::Drawing::Size(92, 29);
+			this->graphicsItem->Text = L"Graphics";
 			// 
 			// addItem
 			// 
@@ -116,8 +164,8 @@ namespace BresenhamAlgos {
 			});
 			this->addItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"addItem.Image")));
 			this->addItem->Name = L"addItem";
-			this->addItem->Size = System::Drawing::Size(175, 30);
-			this->addItem->Text = L"Add";
+			this->addItem->Size = System::Drawing::Size(211, 30);
+			this->addItem->Text = L"Add shape";
 			// 
 			// lineItem
 			// 
@@ -143,13 +191,34 @@ namespace BresenhamAlgos {
 			this->ellipseItem->Text = L"Ellipse";
 			this->ellipseItem->Click += gcnew System::EventHandler(this, &MainWinForm::ellipseItem_Click);
 			// 
+			// fillToolStripMenuItem
+			// 
+			this->fillToolStripMenuItem->Name = L"fillToolStripMenuItem";
+			this->fillToolStripMenuItem->Size = System::Drawing::Size(211, 30);
+			this->fillToolStripMenuItem->Text = L"Fill";
+			// 
 			// clearItem
 			// 
 			this->clearItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"clearItem.Image")));
 			this->clearItem->Name = L"clearItem";
-			this->clearItem->Size = System::Drawing::Size(175, 30);
+			this->clearItem->Size = System::Drawing::Size(211, 30);
 			this->clearItem->Text = L"Clear filed";
 			this->clearItem->Click += gcnew System::EventHandler(this, &MainWinForm::clearItem_Click);
+			// 
+			// settingsItem
+			// 
+			this->settingsItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->colorItem });
+			this->settingsItem->Name = L"settingsItem";
+			this->settingsItem->Size = System::Drawing::Size(88, 29);
+			this->settingsItem->Text = L"Settings";
+			// 
+			// colorItem
+			// 
+			this->colorItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"colorItem.Image")));
+			this->colorItem->Name = L"colorItem";
+			this->colorItem->Size = System::Drawing::Size(211, 30);
+			this->colorItem->Text = L"Color...";
+			this->colorItem->Click += gcnew System::EventHandler(this, &MainWinForm::colorItem_Click);
 			// 
 			// helpItem
 			// 
@@ -188,7 +257,7 @@ namespace BresenhamAlgos {
 			this->groupBox->Controls->Add(this->numericHeight);
 			this->groupBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->groupBox->Location = System::Drawing::Point(718, 325);
+			this->groupBox->Location = System::Drawing::Point(718, 331);
 			this->groupBox->Name = L"groupBox";
 			this->groupBox->Size = System::Drawing::Size(147, 106);
 			this->groupBox->TabIndex = 2;
@@ -309,11 +378,15 @@ namespace BresenhamAlgos {
 			int length(Point^ a, Point^ b);
 
 			// Drawing dot
-			void draw_dot(Graphics^ gr, int x, int y, int size);
+			void draw_dot(Graphics^ gr, int x, int y, Color col, int size);
 
 			// Draw shapes
-			void draw_shapes(Graphics^ gr, Pen^ pen);
+			void add_draw_shape(Graphics^ gr, Pen^ pen);
 
+			// For ellipse height and width values changing
 			System::Void exchangeButton_Click(System::Object^  sender, System::EventArgs^  e);
+
+			// Color settings
+			System::Void colorItem_Click(System::Object^  sender, System::EventArgs^  e);
 };
 }
