@@ -2,7 +2,7 @@
 
 GEllipse::GEllipse(Point ^ center, int width, int height) :GEllipse(Color::Black, 2, center, width, height) { }
 
-GEllipse::GEllipse(Color ^ color, int depth, Point ^ center, int width, int height) : GShape(color, depth)
+GEllipse::GEllipse(Color  color, int depth, Point ^ center, int width, int height) : GShape(color, depth)
 {
 	this->_center = center;
 	this->_width = width;

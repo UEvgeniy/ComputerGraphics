@@ -9,7 +9,7 @@ private:
 
 public:
 	GCircle(Point^ center, Point^ circlePoint);
-	GCircle(Color^ color, int depth, Point^ center, Point^ circlePoint);
+	GCircle(Color color, int depth, Point^ center, Point^ circlePoint);
 
 	List<pair>^ getPixels() override;
 };

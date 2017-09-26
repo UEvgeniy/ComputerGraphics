@@ -4,7 +4,7 @@ GCircle::GCircle(Point ^ center, Point ^ circlePoint) : GCircle(Color::Black, 2,
 { }
 
 
-GCircle::GCircle(Color^ color, int depth, Point^ center, Point^ circlePoint) : GShape(color, depth)
+GCircle::GCircle(Color color, int depth, Point^ center, Point^ circlePoint) : GShape(color, depth)
 { 
 	this->_center = center;
 	this->_cPoint = circlePoint;

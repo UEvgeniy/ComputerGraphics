@@ -1,17 +1,17 @@
 #include "GShape.h"
 
-GShape::GShape(Color ^ col, int depth)
+GShape::GShape(Color  col, int depth)
 {
 	setColor(col);
 	setDepth(depth);
 }
 
-void GShape::setColor(Color ^ col)
+void GShape::setColor(Color col)
 {
 	this->_color = col;
 }
 
-Color ^ GShape::getColor()
+Color GShape::getColor()
 {
 	return this->_color;
 }

@@ -6,15 +6,15 @@ using namespace System::Drawing;
 ref class GShape
 {
 protected:
-	Color^ _color;
+	Color _color;
 	int _depth;
 
-	GShape(Color^ col, int depth);
+	GShape(Color col, int depth);
 
 public:
 	
-	void setColor(Color^ col);
-	Color^ getColor();
+	void setColor(Color col);
+	Color getColor();
 
 	int getDepth();
 	void setDepth(int depth);
