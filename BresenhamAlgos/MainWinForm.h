@@ -6,6 +6,7 @@
 namespace BresenhamAlgos {
 
 	using namespace System;
+	using namespace System::IO;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
 	using namespace System::Windows::Forms;
@@ -70,7 +71,8 @@ namespace BresenhamAlgos {
 		List<ToolStripMenuItem^>^ items;
 		List<GShape^>^ shapes;
 		int maximumClicks; // number of clicks required on pictureBox for drawing shape
-		int currentClicks; // current number of clicks
+	private: System::Windows::Forms::SaveFileDialog^  saveDialog;
+			 int currentClicks; // current number of clicks
 
 
 
@@ -105,6 +107,7 @@ namespace BresenhamAlgos {
 			this->numericWidth = (gcnew System::Windows::Forms::NumericUpDown());
 			this->numericHeight = (gcnew System::Windows::Forms::NumericUpDown());
 			this->colorDialog = (gcnew System::Windows::Forms::ColorDialog());
+			this->saveDialog = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->menuStrip->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox))->BeginInit();
 			this->groupBox->SuspendLayout();
@@ -128,25 +131,23 @@ namespace BresenhamAlgos {
 			// 
 			// fileItem
 			// 
-			this->fileItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
-				this->openItem,
-					this->saveItem
-			});
+			this->fileItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->openItem, this->saveItem });
 			this->fileItem->Name = L"fileItem";
 			this->fileItem->Size = System::Drawing::Size(50, 29);
 			this->fileItem->Text = L"File";
 			// 
-			// openToolStripMenuItem
+			// openItem
 			// 
-			this->openItem->Name = L"openToolStripMenuItem";
+			this->openItem->Name = L"openItem";
 			this->openItem->Size = System::Drawing::Size(153, 30);
 			this->openItem->Text = L"Open...";
 			// 
-			// saveToolStripMenuItem
+			// saveItem
 			// 
-			this->saveItem->Name = L"saveToolStripMenuItem";
+			this->saveItem->Name = L"saveItem";
 			this->saveItem->Size = System::Drawing::Size(153, 30);
 			this->saveItem->Text = L"Save...";
+			this->saveItem->Click += gcnew System::EventHandler(this, &MainWinForm::saveItem_Click);
 			// 
 			// graphicsItem
 			// 
@@ -166,7 +167,7 @@ namespace BresenhamAlgos {
 			});
 			this->addItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"addItem.Image")));
 			this->addItem->Name = L"addItem";
-			this->addItem->Size = System::Drawing::Size(211, 30);
+			this->addItem->Size = System::Drawing::Size(183, 30);
 			this->addItem->Text = L"Add shape";
 			// 
 			// lineItem
@@ -193,17 +194,17 @@ namespace BresenhamAlgos {
 			this->ellipseItem->Text = L"Ellipse";
 			this->ellipseItem->Click += gcnew System::EventHandler(this, &MainWinForm::ellipseItem_Click);
 			// 
-			// fillToolStripMenuItem
+			// fillItem
 			// 
-			this->fillItem->Name = L"fillToolStripMenuItem";
-			this->fillItem->Size = System::Drawing::Size(211, 30);
+			this->fillItem->Name = L"fillItem";
+			this->fillItem->Size = System::Drawing::Size(183, 30);
 			this->fillItem->Text = L"Fill";
 			// 
 			// clearItem
 			// 
 			this->clearItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"clearItem.Image")));
 			this->clearItem->Name = L"clearItem";
-			this->clearItem->Size = System::Drawing::Size(211, 30);
+			this->clearItem->Size = System::Drawing::Size(183, 30);
 			this->clearItem->Text = L"Clear filed";
 			this->clearItem->Click += gcnew System::EventHandler(this, &MainWinForm::clearItem_Click);
 			// 
@@ -218,7 +219,7 @@ namespace BresenhamAlgos {
 			// 
 			this->colorItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"colorItem.Image")));
 			this->colorItem->Name = L"colorItem";
-			this->colorItem->Size = System::Drawing::Size(211, 30);
+			this->colorItem->Size = System::Drawing::Size(152, 30);
 			this->colorItem->Text = L"Color...";
 			this->colorItem->Click += gcnew System::EventHandler(this, &MainWinForm::colorItem_Click);
 			// 
@@ -324,6 +325,11 @@ namespace BresenhamAlgos {
 			this->numericHeight->TabIndex = 3;
 			this->numericHeight->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 40, 0, 0, 0 });
 			// 
+			// saveDialog
+			// 
+			this->saveDialog->FileName = L"shapes";
+			this->saveDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &MainWinForm::saveDialog_FileOk);
+			// 
 			// MainWinForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
@@ -395,5 +401,20 @@ namespace BresenhamAlgos {
 
 			// Color settings
 			System::Void colorItem_Click(System::Object^  sender, System::EventArgs^  e);
+
+	System::Void saveItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		saveDialog->ShowDialog();
+
+}
+	System::Void saveDialog_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) {
+	
+		StreamWriter^ sw = gcnew StreamWriter(saveDialog->FileName);
+
+		for each (GShape^ shape in shapes)
+		{
+			sw->WriteLine(shape->ToString());
+		}
+		sw->Close();
+		}
 };
 }

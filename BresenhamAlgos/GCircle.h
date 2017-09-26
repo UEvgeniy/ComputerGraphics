@@ -12,5 +12,7 @@ public:
 	GCircle(Color color, int depth, Point^ center, Point^ circlePoint);
 
 	List<pair>^ getPixels() override;
+	System::String^ ToString() override;
+
 };
 

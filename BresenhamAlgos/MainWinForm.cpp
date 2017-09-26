@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include "Bresenham.h"
 #include "AboutForm.h"
+
 #include "GLine.h"
 #include"GEllipse.h"
 #include "GCircle.h"
@@ -10,6 +11,7 @@
 using namespace BresenhamAlgos; 
 
 // main
+[STAThread]
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	Application::EnableVisualStyles();
@@ -43,6 +45,10 @@ inline BresenhamAlgos::MainWinForm::MainWinForm(void)
 	lineItem->PerformClick();
 	labelH->Text = "Height (max " + numericHeight->Maximum +"):";
 	labelW->Text = "Width (max " + numericWidth->Maximum + "):";
+
+	// Save Dialog
+	saveDialog->DefaultExt = "gr";
+	saveDialog->Filter = "Graphics Files (*.gr)|*.gr";
 }
 
 /// <summary>
@@ -194,6 +200,5 @@ inline void BresenhamAlgos::MainWinForm::exchangeButton_Click(System::Object ^ s
 	numericWidth->Value = tmp < numericWidth->Maximum ? tmp : numericWidth->Maximum;
 
 }
-
 
 

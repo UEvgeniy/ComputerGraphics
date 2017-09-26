@@ -14,3 +14,12 @@ List<pair>^ GCircle::getPixels()
 {
 	return Bresenham::buildCircle(_center->X, _center->Y, _cPoint->X, _cPoint->Y);
 }
+
+System::String ^ GCircle::ToString()
+{
+	return System::String::Format("Circle;{0};{1};{2};{3}",
+		this->_center,
+		this->_cPoint,
+		this->_color,
+		this->_depth);
+}

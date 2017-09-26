@@ -25,4 +25,3 @@ void GShape::setDepth(int depth)
 {
 	this->_depth = depth;
 }
-
