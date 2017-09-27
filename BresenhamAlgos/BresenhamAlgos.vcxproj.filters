@@ -42,6 +42,9 @@
     <ClCompile Include="GCircle.cpp">
       <Filter>Source Files\Shapes</Filter>
     </ClCompile>
+    <ClCompile Include="GShapeParser.cpp">
+      <Filter>Source Files\Shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWinForm.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files\Shapes</Filter>
     </ClInclude>
     <ClInclude Include="GCircle.h">
+      <Filter>Header Files\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="GShapeParser.h">
       <Filter>Header Files\Shapes</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,8 +18,9 @@ List<pair>^ GCircle::getPixels()
 System::String ^ GCircle::ToString()
 {
 	return System::String::Format("Circle;{0};{1};{2};{3}",
+		this->_color.ToArgb(),
+		this->_depth,
 		this->_center,
-		this->_cPoint,
-		this->_color,
-		this->_depth);
+		this->_cPoint
+		);
 }

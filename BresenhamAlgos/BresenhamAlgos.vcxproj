@@ -137,6 +137,7 @@
     <ClCompile Include="GEllipse.cpp" />
     <ClCompile Include="GLine.cpp" />
     <ClCompile Include="GShape.cpp" />
+    <ClCompile Include="GShapeParser.cpp" />
     <ClCompile Include="MainWinForm.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +149,7 @@
     <ClInclude Include="GEllipse.h" />
     <ClInclude Include="GLine.h" />
     <ClInclude Include="GShape.h" />
+    <ClInclude Include="GShapeParser.h" />
     <ClInclude Include="MainWinForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>

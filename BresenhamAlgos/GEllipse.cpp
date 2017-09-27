@@ -13,3 +13,14 @@ List<pair>^ GEllipse::getPixels()
 {
 	return Bresenham::buildEllipse(_center->X, _center->Y, _width, _height);
 }
+
+System::String ^ GEllipse::ToString()
+{
+	return System::String::Format("Ellipse;{0};{1};{2};{3};{4}",
+		this->_color.ToArgb(),
+		this->_depth,
+		this->_center,
+		this->_width,
+		this->_height
+		);
+}

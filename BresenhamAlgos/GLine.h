@@ -14,5 +14,6 @@ public:
 	Point^ getSecond();
 
 	List<pair>^ getPixels() override;
+	System::String^ ToString() override;
 };
 

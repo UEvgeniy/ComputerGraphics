@@ -6,6 +6,7 @@
 #include "GLine.h"
 #include"GEllipse.h"
 #include "GCircle.h"
+#include "GShapeParser.h"
 
 
 using namespace BresenhamAlgos; 
@@ -137,6 +138,70 @@ inline void BresenhamAlgos::MainWinForm::itemChanged(ToolStripMenuItem ^ item, i
 // Color setting
 inline System::Void BresenhamAlgos::MainWinForm::colorItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	colorDialog->ShowDialog();
+}
+inline System::Void BresenhamAlgos::MainWinForm::saveDialog_FileOk(System::Object ^ sender, System::ComponentModel::CancelEventArgs ^ e) {
+
+	StreamWriter^ sw = gcnew StreamWriter(saveDialog->FileName);
+
+	for each (GShape^ shape in shapes)
+	{
+		// todo exception
+		sw->WriteLine(shape->ToString());
+	}
+	sw->Close();
+}
+// Open
+inline System::Void BresenhamAlgos::MainWinForm::openItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	
+	openDialog->ShowDialog();
+
+	try
+	{
+		GShapeParser^ parser = gcnew GShapeParser();
+		GShape^ shape = parser->parse("Ellipse;-16744193;1;{X=343,Y=332};40;20");
+	}
+	catch (ArgumentException^ e)
+	{
+		MessageBox::Show(e->Message, "Error while reading file!", 
+			MessageBoxButtons::OK, MessageBoxIcon::Error);
+	}
+	
+	int a = 12;
+}
+inline System::Void BresenhamAlgos::MainWinForm::openDialog_FileOk(System::Object ^ sender, System::ComponentModel::CancelEventArgs ^ e) {
+
+	// Read, parse and save shapes from file 
+
+	array<String^>^ lines = File::ReadAllLines(openDialog->FileName);
+	List<GShape^>^ newList = gcnew List<GShape^>();
+	GShapeParser^ parser = gcnew GShapeParser();
+	try
+	{
+		for each (String^ line in lines)
+		{
+			newList->Add(parser->parse(line));
+		}
+	}
+	catch (ArgumentException^ e)
+	{
+		MessageBox::Show(e->Message, "Error while reading file!",
+			MessageBoxButtons::OK, MessageBoxIcon::Error);
+		newList->Clear();
+		return;
+	}
+
+	// Draw shapes
+	Graphics^ gr = Graphics::FromImage(bm);
+	for each (GShape^ shape in newList)
+	{
+		drawShape(gr, shape);
+	}
+	shapes->Clear();
+	shapes = newList;
+
+	delete gr;
+	pictureBox->Refresh();
+
 }
 #pragma endregion
 

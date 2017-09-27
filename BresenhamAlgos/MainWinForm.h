@@ -1,5 +1,6 @@
 #pragma once
 #include "GShape.h"
+
 // Sem 1. Bresenham Algos. 
 // Sem 2. Filling, clipping.
 // Made by Evgeniy Urnyshev. Moscow, 2017.
@@ -72,6 +73,7 @@ namespace BresenhamAlgos {
 		List<GShape^>^ shapes;
 		int maximumClicks; // number of clicks required on pictureBox for drawing shape
 	private: System::Windows::Forms::SaveFileDialog^  saveDialog;
+	private: System::Windows::Forms::OpenFileDialog^  openDialog;
 			 int currentClicks; // current number of clicks
 
 
@@ -108,6 +110,7 @@ namespace BresenhamAlgos {
 			this->numericHeight = (gcnew System::Windows::Forms::NumericUpDown());
 			this->colorDialog = (gcnew System::Windows::Forms::ColorDialog());
 			this->saveDialog = (gcnew System::Windows::Forms::SaveFileDialog());
+			this->openDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->menuStrip->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox))->BeginInit();
 			this->groupBox->SuspendLayout();
@@ -139,13 +142,14 @@ namespace BresenhamAlgos {
 			// openItem
 			// 
 			this->openItem->Name = L"openItem";
-			this->openItem->Size = System::Drawing::Size(153, 30);
+			this->openItem->Size = System::Drawing::Size(211, 30);
 			this->openItem->Text = L"Open...";
+			this->openItem->Click += gcnew System::EventHandler(this, &MainWinForm::openItem_Click);
 			// 
 			// saveItem
 			// 
 			this->saveItem->Name = L"saveItem";
-			this->saveItem->Size = System::Drawing::Size(153, 30);
+			this->saveItem->Size = System::Drawing::Size(211, 30);
 			this->saveItem->Text = L"Save...";
 			this->saveItem->Click += gcnew System::EventHandler(this, &MainWinForm::saveItem_Click);
 			// 
@@ -330,6 +334,11 @@ namespace BresenhamAlgos {
 			this->saveDialog->FileName = L"shapes";
 			this->saveDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &MainWinForm::saveDialog_FileOk);
 			// 
+			// openDialog
+			// 
+			this->openDialog->Filter = L"Graphics Files (*.gr)|*.gr";
+			this->openDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &MainWinForm::openDialog_FileOk);
+			// 
 			// MainWinForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
@@ -406,15 +415,9 @@ namespace BresenhamAlgos {
 		saveDialog->ShowDialog();
 
 }
-	System::Void saveDialog_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) {
-	
-		StreamWriter^ sw = gcnew StreamWriter(saveDialog->FileName);
+	System::Void saveDialog_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e);
 
-		for each (GShape^ shape in shapes)
-		{
-			sw->WriteLine(shape->ToString());
-		}
-		sw->Close();
-		}
+private: System::Void openItem_Click(System::Object^  sender, System::EventArgs^  e);
+private: System::Void openDialog_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e);
 };
 }

@@ -12,5 +12,6 @@ public:
 	GEllipse(Color color, int depth, Point^ center, int width, int height);
 
 	List<pair>^ getPixels() override;
+	System::String^ ToString() override;
 };
 
