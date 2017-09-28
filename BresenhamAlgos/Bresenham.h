@@ -5,6 +5,8 @@ using namespace System::Collections::Generic;
 
 typedef array<int>^ pair;
 
+pair make_pair(int x, int y);
+
 public class Bresenham {
 
 	public:
@@ -16,6 +18,5 @@ public class Bresenham {
 		static List<pair>^ buildEllipse(int xc, int yc, int r1, int r2);
 
 private:
-	static pair make_pair(int x, int y);
 	static int sign(int val);
 };

@@ -161,7 +161,7 @@ List<pair>^ Bresenham::buildEllipse(int xc, int yc, int r1, int r2)
 	return res;
 }
 
-pair Bresenham::make_pair(int x, int y)
+pair make_pair(int x, int y)
 {
 	pair pp = gcnew array<int>(2);
 	pp[0] = x;

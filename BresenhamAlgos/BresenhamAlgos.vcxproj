@@ -139,6 +139,7 @@
     <ClCompile Include="GShape.cpp" />
     <ClCompile Include="GShapeParser.cpp" />
     <ClCompile Include="MainWinForm.cpp" />
+    <ClCompile Include="StrokeFill.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutForm.h">
@@ -153,6 +154,7 @@
     <ClInclude Include="MainWinForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="StrokeFill.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutForm.resx">

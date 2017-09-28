@@ -7,6 +7,7 @@
 #include"GEllipse.h"
 #include "GCircle.h"
 #include "GShapeParser.h"
+#include "StrokeFill.h"
 
 
 using namespace BresenhamAlgos; 
@@ -41,6 +42,7 @@ inline BresenhamAlgos::MainWinForm::MainWinForm(void)
 	items->Add(lineItem);
 	items->Add(circleItem);
 	items->Add(ellipseItem);
+	items->Add(strokeFillItem);
 
 	// Default selection
 	lineItem->PerformClick();
@@ -285,6 +287,9 @@ GShape ^ BresenhamAlgos::MainWinForm::formShape(int depth)
 		int height = (int)numericHeight->Value;
 		shape = gcnew GEllipse(colorDialog->Color, depth, p1, width, height);
 	}
+	else if (strokeFillItem->Checked) {
+		shape = gcnew StrokeFill(colorDialog->Color, p1);
+	}
 	return shape;
 }
 // Draw shape
@@ -309,6 +314,7 @@ void BresenhamAlgos::MainWinForm::drawShape(GShape ^ shape)
 	pictureBox->Refresh();
 }
 
-
-
-
+// Stroke filling with seed point
+inline System::Void BresenhamAlgos::MainWinForm::strokeFillItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	itemChanged((ToolStripMenuItem^)sender, 1);
+}

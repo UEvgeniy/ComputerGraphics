@@ -81,7 +81,9 @@ namespace BresenhamAlgos {
 		List<ToolStripMenuItem^>^ items;
 		List<GShape^>^ shapes;
 		int maximumClicks; // number of clicks required on pictureBox for drawing shape
-		int currentClicks; // current number of clicks
+	private: System::Windows::Forms::ToolStripMenuItem^  strokeFillItem;
+
+			 int currentClicks; // current number of clicks
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -102,6 +104,7 @@ namespace BresenhamAlgos {
 			this->circleItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->ellipseItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->fillItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->strokeFillItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->clearItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->settingsItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->colorItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -219,9 +222,17 @@ namespace BresenhamAlgos {
 			// 
 			// fillItem
 			// 
+			this->fillItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->strokeFillItem });
 			this->fillItem->Name = L"fillItem";
 			this->fillItem->Size = System::Drawing::Size(211, 30);
 			this->fillItem->Text = L"Fill";
+			// 
+			// strokeFillItem
+			// 
+			this->strokeFillItem->Name = L"strokeFillItem";
+			this->strokeFillItem->Size = System::Drawing::Size(274, 30);
+			this->strokeFillItem->Text = L"Stroke with seed point";
+			this->strokeFillItem->Click += gcnew System::EventHandler(this, &MainWinForm::strokeFillItem_Click);
 			// 
 			// clearItem
 			// 
@@ -432,6 +443,8 @@ namespace BresenhamAlgos {
 			System::Void aboutItem_Click(System::Object^  sender, System::EventArgs^  e);
 			// For ellipse height and width values changing
 			System::Void exchangeButton_Click(System::Object^  sender, System::EventArgs^  e);
+			// Stroke filling with seed point
+			System::Void strokeFillItem_Click(System::Object^  sender, System::EventArgs^  e);
 
 			// Color settings
 			System::Void colorItem_Click(System::Object^  sender, System::EventArgs^  e);
@@ -459,5 +472,6 @@ namespace BresenhamAlgos {
 
 #pragma endregion
 	
+			
 };
 }
