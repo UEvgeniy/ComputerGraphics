@@ -63,8 +63,8 @@ inline BresenhamAlgos::MainWinForm::~MainWinForm()
 	}
 }
 
-// PictureBox is clicked
-System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::Object ^ sender, MouseEventArgs ^ e)
+// PictureBox is clicked (left and right)
+inline System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::Object ^ sender, MouseEventArgs ^ e)
 {
 	Graphics^ gr = Graphics::FromImage(bm);
 	draw_dot(gr, e->Location.X, e->Location.Y, colorDialog->Color, 2);
@@ -83,6 +83,42 @@ System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::Object ^
 	pictureBox->Refresh();
 
 }
+inline System::Void BresenhamAlgos::MainWinForm::randomItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	GShape^ shape;
+
+	int const maxRad = 100;
+
+	Random^ rand = gcnew Random();
+	Point randPoint = Point(rand->Next(pictureBox->Width), rand->Next(pictureBox->Height));
+
+	if (ellipseItem->Checked) {
+		shape = gcnew GEllipse(randPoint,
+			rand->Next(maxRad),
+			rand->Next(maxRad));
+	}
+	else if (circleItem->Checked) {
+		Point oneMorePoint = Point(randPoint.X + rand->Next(maxRad),
+			randPoint.Y + rand->Next(maxRad));
+
+		shape = gcnew GCircle(randPoint, oneMorePoint);
+	}
+	else if (lineItem->Checked) {
+		Point oneMorePoint = Point(rand->Next(pictureBox->Width), rand->Next(pictureBox->Height));
+		shape = gcnew GLine(randPoint, oneMorePoint);
+	}
+	else {
+		MessageBox::Show("Please, select a shape for random building", "Error",
+			MessageBoxButtons::OK, MessageBoxIcon::Error);
+		return;
+	}
+	shape->setDepth(rand->Next(1, 3));
+	shape->setColor(Color::FromArgb(rand->Next(255), rand->Next(255), rand->Next(255)));
+
+
+	drawShape(shape);
+
+}
+
 
 #pragma region Click on menu Items
 
@@ -139,6 +175,11 @@ inline void BresenhamAlgos::MainWinForm::itemChanged(ToolStripMenuItem ^ item, i
 inline System::Void BresenhamAlgos::MainWinForm::colorItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	colorDialog->ShowDialog();
 }
+// Save
+inline System::Void BresenhamAlgos::MainWinForm::saveItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	saveDialog->ShowDialog();
+
+}
 inline System::Void BresenhamAlgos::MainWinForm::saveDialog_FileOk(System::Object ^ sender, System::ComponentModel::CancelEventArgs ^ e) {
 
 	StreamWriter^ sw = gcnew StreamWriter(saveDialog->FileName);
@@ -190,14 +231,14 @@ inline System::Void BresenhamAlgos::MainWinForm::openDialog_FileOk(System::Objec
 		return;
 	}
 
+	clearItem->PerformClick();
+
 	// Draw shapes
 	Graphics^ gr = Graphics::FromImage(bm);
 	for each (GShape^ shape in newList)
 	{
 		drawShape(gr, shape);
 	}
-	shapes->Clear();
-	shapes = newList;
 
 	delete gr;
 	pictureBox->Refresh();
@@ -205,19 +246,25 @@ inline System::Void BresenhamAlgos::MainWinForm::openDialog_FileOk(System::Objec
 }
 #pragma endregion
 
+// Button exchanging height and width values
+inline void BresenhamAlgos::MainWinForm::exchangeButton_Click(System::Object ^ sender, System::EventArgs ^ e)
+{
+	Decimal tmp = numericHeight->Value;
+	numericHeight->Value = numericWidth->Value < numericHeight->Maximum ? numericWidth->Value : numericHeight->Maximum;
+	numericWidth->Value = tmp < numericWidth->Maximum ? tmp : numericWidth->Maximum;
+}
 
+
+// Length between 2 dots
 int BresenhamAlgos::MainWinForm::length(Point ^ a, Point ^ b)
 {
 	int len = (int)Math::Sqrt(Math::Pow(a->X - b->X, 2) + Math::Pow(a->Y - b->Y, 2));
 	return len;
 }
-
 // Draw dot (rectangle)
 inline void BresenhamAlgos::MainWinForm::draw_dot(Graphics^ gr, int x, int y, Color col, int size) {
 	gr->FillRectangle(gcnew SolidBrush(col), x - (size / 2), y - (size / 2), size, size);
 }
-
-
 // Get Shape by menuItems and points
 GShape ^ BresenhamAlgos::MainWinForm::formShape(int depth)
 {
@@ -240,7 +287,6 @@ GShape ^ BresenhamAlgos::MainWinForm::formShape(int depth)
 	}
 	return shape;
 }
-
 // Draw shape
 void BresenhamAlgos::MainWinForm::drawShape(Graphics^ gr, GShape^ shape)
 {
@@ -255,15 +301,14 @@ void BresenhamAlgos::MainWinForm::drawShape(Graphics^ gr, GShape^ shape)
 		draw_dot(gr, p[0], p[1], shape->getColor(), shape->getDepth());
 	}
 }
-
-// Button exchanging height and width values
-inline void BresenhamAlgos::MainWinForm::exchangeButton_Click(System::Object ^ sender, System::EventArgs ^ e)
+void BresenhamAlgos::MainWinForm::drawShape(GShape ^ shape)
 {
-	
-	Decimal tmp = numericHeight->Value;
-	numericHeight->Value = numericWidth->Value < numericHeight->Maximum ? numericWidth->Value : numericHeight->Maximum;
-	numericWidth->Value = tmp < numericWidth->Maximum ? tmp : numericWidth->Maximum;
-
+	Graphics^ gr = Graphics::FromImage(bm);
+	drawShape(gr, shape);
+	delete gr;
+	pictureBox->Refresh();
 }
+
+
 
 
