@@ -1,5 +1,6 @@
 #pragma once
 #include "GShape.h"
+
 ref class GLine :
 	public GShape
 {
@@ -13,7 +14,7 @@ public:
 	Point^ getFirst();
 	Point^ getSecond();
 
-	List<pair>^ getPixels() override;
+	List<Tuple<int, int>^>^ getPixels() override;
 	System::String^ ToString() override;
 };
 

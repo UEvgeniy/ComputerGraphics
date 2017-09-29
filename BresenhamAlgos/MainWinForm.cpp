@@ -1,5 +1,6 @@
-#include "MainWinForm.h"
 #include <Windows.h>
+
+#include "MainWinForm.h"
 #include "Bresenham.h"
 #include "AboutForm.h"
 
@@ -296,15 +297,15 @@ GShape ^ BresenhamAlgos::MainWinForm::formShape(int depth)
 // Draw shape
 void BresenhamAlgos::MainWinForm::drawShape(Graphics^ gr, GShape^ shape)
 {
-	List<pair>^ drawn_dots;
+	List<Tuple<int, int>^>^ drawn_dots;
 
 	drawn_dots = shape->getPixels();
 	shapes->Add(shape);
 
 	// Draw all points from list
 	for (int i = 0; i < drawn_dots->Count; i++) {
-		pair p = drawn_dots[i];
-		draw_dot(gr, p[0], p[1], shape->getColor(), shape->getDepth());
+		Tuple<int, int>^ p = drawn_dots[i];
+		draw_dot(gr, p->Item1, p->Item2, shape->getColor(), shape->getDepth());
 	}
 }
 void BresenhamAlgos::MainWinForm::drawShape(GShape ^ shape)

@@ -1,16 +1,16 @@
 #include "Bresenham.h"
-#include <math.h>
 
-List<pair>^ Bresenham::buildLine(int x1, int y1, int x2, int y2)
+
+List<System::Tuple<int, int>^>^ Bresenham::buildLine(int x1, int y1, int x2, int y2)
 {
-	List<pair>^ res = gcnew List<pair>();
+	List<System::Tuple<int, int>^>^ res = gcnew List<System::Tuple<int, int>^>();
 
 	int x = x1;
 	int y = y1;
 
 	// deltas
-	int dx = abs(x2 - x1);
-	int dy = abs(y2 - y1);
+	int dx = Math::Abs(x2 - x1);
+	int dy = Math::Abs(y2 - y1);
 
 	int s1 = sign(x2 - x1);
 	int s2 = sign(y2 - y1); 
@@ -53,9 +53,9 @@ List<pair>^ Bresenham::buildLine(int x1, int y1, int x2, int y2)
 	return res;
 }
 
-List<pair>^ Bresenham::buildCircle(int xc, int yc, int xk, int yk)
+List<System::Tuple<int, int>^>^ Bresenham::buildCircle(int xc, int yc, int xk, int yk)
 {
-	List<pair>^ res = gcnew List<pair>();
+	List<System::Tuple<int, int>^>^ res = gcnew List<System::Tuple<int, int>^>();
 
 	int x1 = xc;
 	int x2 = xk;
@@ -66,7 +66,7 @@ List<pair>^ Bresenham::buildCircle(int xc, int yc, int xk, int yk)
 	int dy = y1 - y2;
 
 	int x = 0;
-	int y = sqrt(dx * dx + dy * dy);
+	int y = Math::Sqrt(dx * dx + dy * dy);
 	int d = 2 * (1 - y);
 	int lim = 0;
 
@@ -104,9 +104,9 @@ List<pair>^ Bresenham::buildCircle(int xc, int yc, int xk, int yk)
 	return res;
 }
 
-List<pair>^ Bresenham::buildEllipse(int xc, int yc, int r1, int r2)
+List<System::Tuple<int, int>^>^ Bresenham::buildEllipse(int xc, int yc, int r1, int r2)
 {
-	List<pair>^ res = gcnew List<pair>();
+	List<System::Tuple<int, int>^>^ res = gcnew List<System::Tuple<int, int>^>();
 
 	int x = 0;
 	int y = r2;
@@ -161,12 +161,9 @@ List<pair>^ Bresenham::buildEllipse(int xc, int yc, int r1, int r2)
 	return res;
 }
 
-pair make_pair(int x, int y)
+System::Tuple<int, int>^ make_pair(int x, int y)
 {
-	pair pp = gcnew array<int>(2);
-	pp[0] = x;
-	pp[1] = y;
-	return pp;
+	return gcnew System::Tuple<int, int>(x, y);
 }
 
 // returns -1, 0 or	1 in dependence of value sign

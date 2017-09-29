@@ -9,7 +9,7 @@ GEllipse::GEllipse(Color  color, int depth, Point ^ center, int width, int heigh
 	this->_height = height;
 }
 
-List<pair>^ GEllipse::getPixels()
+List<Tuple<int, int>^>^ GEllipse::getPixels()
 {
 	return Bresenham::buildEllipse(_center->X, _center->Y, _width, _height);
 }

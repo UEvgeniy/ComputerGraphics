@@ -6,7 +6,7 @@
 // Made by Evgeniy Urnyshev. Moscow, 2017.
 namespace BresenhamAlgos {
 
-	using namespace System;
+	//using namespace System;
 	using namespace System::IO;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;

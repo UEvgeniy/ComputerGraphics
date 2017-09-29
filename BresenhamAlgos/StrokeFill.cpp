@@ -1,12 +1,8 @@
 #include "StrokeFill.h"
-//#include <stack>
-
-using namespace System::Collections::Generic;
-using namespace System;
 
 StrokeFill::StrokeFill(Color col, Bitmap^ bm, Point^ seed) : GShape(col, 1)
 {
-	this->_pixels = gcnew List<pair>();
+	this->_pixels = gcnew List<Tuple<int, int>^>();
 	this->_seed = seed;
 	this->_bm = bm;
 }
@@ -61,7 +57,6 @@ bool StrokeFill::canMoveRight(int x, int y, Color^ redrawnColor) {
 
 	return _bm->GetPixel(x, y).Equals(redrawnColor) && _bm->GetPixel(x + 1, y).Equals(redrawnColor);
 }
-
 bool StrokeFill::canMoveLeft(int x, int y, Color^ redrawnColor) {
 	if (x - 1 < 0)
 		return false;
@@ -69,7 +64,7 @@ bool StrokeFill::canMoveLeft(int x, int y, Color^ redrawnColor) {
 	return _bm->GetPixel(x - 1, y).Equals(redrawnColor);
 }
 
-void StrokeFill::inspectPoints(int xMin, int xMax, int y, Stack<pair>^ stack, Color^ redrawnCol)
+void StrokeFill::inspectPoints(int xMin, int xMax, int y, Stack<Tuple<int, int>^>^ stack, Color^ redrawnCol)
 {
 	int curX = xMin;
 	while (curX < xMax ||
@@ -77,20 +72,25 @@ void StrokeFill::inspectPoints(int xMin, int xMax, int y, Stack<pair>^ stack, Co
 
 		if ((getPixColor(curX, y)->Equals(redrawnCol)
 			&& !canMoveRight(curX, y, redrawnCol)) || curX == _bm->Width - 1) {
-			stack->Push(make_pair(curX, y));
+
+			Tuple<int, int>^ t = make_pair(curX, y);
+
+			if (!_pixels->Contains(t)) {
+				stack->Push(make_pair(curX, y));
+			}
 		}
 		curX++;
 	}
 }
 
-List<pair>^ StrokeFill::getPixels()
+List<Tuple<int, int>^>^ StrokeFill::getPixels()
 {
 	if (_pixels->Count > 0) {
 		return _pixels;
 	}
 
 	Color^ redrawnCol = _bm->GetPixel(_seed->X, _seed->Y);
-	Stack<pair>^ points = gcnew Stack<pair>();
+	Stack<Tuple<int, int>^>^ points = gcnew Stack<Tuple<int, int>^>();
 	
 	int curX = _seed->X;
 	int curY = _seed->Y;
@@ -105,15 +105,15 @@ List<pair>^ StrokeFill::getPixels()
 
 	while (points->Count > 0) {
 
-		pair p = points->Pop();
+		Tuple<int, int>^ p = points->Pop();
 
 		// Already redrawned pixel
 		if (_pixels->Contains(p)) {
 			continue;
 		}
 
-		curX = p[0];
-		curY = p[1];
+		curX = p->Item1;
+		curY = p->Item2;
 
 		// Go left to the border and fill in
 
@@ -132,13 +132,14 @@ List<pair>^ StrokeFill::getPixels()
 
 		// Go down
 		if (curY + 1 < _bm->Height) {
-			inspectPoints(curX, p[0], curY + 1, points, redrawnCol);
+			inspectPoints(curX, p->Item1, curY + 1, points, redrawnCol);
 		}
 
 		// Go up
-		//if (curY - 1 >= 0 && !points->Contains(make_pair(curX, curY - 1))) {
-		//	inspectPoints(curX, p[0], curY - 1, points, redrawnCol);
-		//}
+		if (curY - 1 >= 0 && !points->Contains(make_pair(curX, curY - 1))) {
+			inspectPoints(curX, p->Item1, curY - 1, points, redrawnCol);
+		}
+		int a = 12;
 	}
 
 	return _pixels;

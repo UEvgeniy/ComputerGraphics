@@ -10,7 +10,7 @@ GCircle::GCircle(Color color, int depth, Point^ center, Point^ circlePoint) : GS
 	this->_cPoint = circlePoint;
 }
 
-List<pair>^ GCircle::getPixels()
+List<Tuple<int, int>^>^ GCircle::getPixels()
 {
 	return Bresenham::buildCircle(_center->X, _center->Y, _cPoint->X, _cPoint->Y);
 }

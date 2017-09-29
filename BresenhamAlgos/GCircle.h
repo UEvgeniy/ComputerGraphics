@@ -1,5 +1,7 @@
 #pragma once
 #include "GShape.h"
+
+
 ref class GCircle :
 	public GShape
 {
@@ -11,7 +13,7 @@ public:
 	GCircle(Point^ center, Point^ circlePoint);
 	GCircle(Color color, int depth, Point^ center, Point^ circlePoint);
 
-	List<pair>^ getPixels() override;
+	List<Tuple<int, int>^>^ getPixels() override;
 	System::String^ ToString() override;
 
 };

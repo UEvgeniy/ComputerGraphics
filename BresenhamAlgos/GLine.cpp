@@ -19,7 +19,7 @@ Point ^ GLine::getSecond()
 	return _p2;
 }
 
-inline List<pair>^ GLine::getPixels() {
+inline List<Tuple<int, int>^>^ GLine::getPixels() {
 	return Bresenham::buildLine(_p1->X, _p1->Y, _p2->X, _p2->Y);
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "GShape.h"
+
 ref class GEllipse :
 	public GShape
 {
@@ -11,7 +12,7 @@ public:
 	GEllipse(Point^ center, int width, int height);
 	GEllipse(Color color, int depth, Point^ center, int width, int height);
 
-	List<pair>^ getPixels() override;
+	List<Tuple<int, int>^>^ getPixels() override;
 	System::String^ ToString() override;
 };
 

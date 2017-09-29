@@ -4,8 +4,6 @@
 #include "GCircle.h"
 #include "GEllipse.h"
 
-using namespace System;
-
 ref class GShapeParser
 {
 private:

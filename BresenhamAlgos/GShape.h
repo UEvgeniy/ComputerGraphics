@@ -19,6 +19,6 @@ public:
 	int getDepth();
 	void setDepth(int depth);
 
-	virtual List<pair>^ getPixels() = 0; //must be overriden in derived classes
+	virtual List<Tuple<int, int>^>^ getPixels() = 0; //must be overriden in derived classes
 };
 
