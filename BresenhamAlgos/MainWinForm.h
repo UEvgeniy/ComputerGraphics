@@ -82,6 +82,8 @@ namespace BresenhamAlgos {
 		List<GShape^>^ shapes;
 		int maximumClicks; // number of clicks required on pictureBox for drawing shape
 	private: System::Windows::Forms::ToolStripMenuItem^  strokeFillItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  clippingItem;
+
 
 			 int currentClicks; // current number of clicks
 
@@ -105,6 +107,7 @@ namespace BresenhamAlgos {
 			this->ellipseItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->fillItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->strokeFillItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->clippingItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->clearItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->settingsItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->colorItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -170,9 +173,9 @@ namespace BresenhamAlgos {
 			// 
 			// graphicsItem
 			// 
-			this->graphicsItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+			this->graphicsItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
 				this->addItem,
-					this->fillItem, this->clearItem
+					this->fillItem, this->clippingItem, this->clearItem
 			});
 			this->graphicsItem->Name = L"graphicsItem";
 			this->graphicsItem->Size = System::Drawing::Size(92, 29);
@@ -223,16 +226,26 @@ namespace BresenhamAlgos {
 			// fillItem
 			// 
 			this->fillItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->strokeFillItem });
+			this->fillItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"fillItem.Image")));
 			this->fillItem->Name = L"fillItem";
 			this->fillItem->Size = System::Drawing::Size(211, 30);
 			this->fillItem->Text = L"Fill";
 			// 
 			// strokeFillItem
 			// 
+			this->strokeFillItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"strokeFillItem.Image")));
 			this->strokeFillItem->Name = L"strokeFillItem";
 			this->strokeFillItem->Size = System::Drawing::Size(274, 30);
 			this->strokeFillItem->Text = L"Stroke with seed point";
 			this->strokeFillItem->Click += gcnew System::EventHandler(this, &MainWinForm::strokeFillItem_Click);
+			// 
+			// clippingItem
+			// 
+			this->clippingItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"clippingItem.Image")));
+			this->clippingItem->Name = L"clippingItem";
+			this->clippingItem->Size = System::Drawing::Size(211, 30);
+			this->clippingItem->Text = L"Clipping";
+			this->clippingItem->Click += gcnew System::EventHandler(this, &MainWinForm::clippingItem_Click);
 			// 
 			// clearItem
 			// 
@@ -470,8 +483,13 @@ namespace BresenhamAlgos {
 			void drawShape(Graphics^ gr, GShape^ shape);
 			void drawShape(GShape^ shape);
 
+			void clipLines();
+
+			void drawRect(Point^ a, Point^ b);
+
 #pragma endregion
 	
 			
+private: System::Void clippingItem_Click(System::Object^  sender, System::EventArgs^  e);
 };
 }

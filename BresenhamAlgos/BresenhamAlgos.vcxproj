@@ -133,28 +133,32 @@
   <ItemGroup>
     <ClCompile Include="AboutForm.cpp" />
     <ClCompile Include="Bresenham.cpp" />
+    <ClCompile Include="Clipping.cpp" />
     <ClCompile Include="GCircle.cpp" />
     <ClCompile Include="GEllipse.cpp" />
     <ClCompile Include="GLine.cpp" />
+    <ClCompile Include="GPositionLine.cpp" />
     <ClCompile Include="GShape.cpp" />
     <ClCompile Include="GShapeParser.cpp" />
     <ClCompile Include="MainWinForm.cpp" />
-    <ClCompile Include="StrokeFill.cpp" />
+    <ClCompile Include="StrokeFilling.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Bresenham.h" />
+    <ClInclude Include="Clipping.h" />
     <ClInclude Include="GCircle.h" />
     <ClInclude Include="GEllipse.h" />
     <ClInclude Include="GLine.h" />
+    <ClInclude Include="GPositionLine.h" />
     <ClInclude Include="GShape.h" />
     <ClInclude Include="GShapeParser.h" />
     <ClInclude Include="MainWinForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="StrokeFill.h" />
+    <ClInclude Include="StrokeFilling.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutForm.resx">

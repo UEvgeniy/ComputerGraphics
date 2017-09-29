@@ -45,7 +45,13 @@
     <ClCompile Include="GShapeParser.cpp">
       <Filter>Source Files\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="StrokeFill.cpp">
+    <ClCompile Include="StrokeFilling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Clipping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GPositionLine.cpp">
       <Filter>Source Files\Shapes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,7 +80,13 @@
     <ClInclude Include="GShapeParser.h">
       <Filter>Header Files\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="StrokeFill.h">
+    <ClInclude Include="StrokeFilling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Clipping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GPositionLine.h">
       <Filter>Header Files\Shapes</Filter>
     </ClInclude>
   </ItemGroup>

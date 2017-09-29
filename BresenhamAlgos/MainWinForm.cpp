@@ -5,10 +5,13 @@
 #include "AboutForm.h"
 
 #include "GLine.h"
-#include"GEllipse.h"
+#include "GEllipse.h"
 #include "GCircle.h"
 #include "GShapeParser.h"
-#include "StrokeFill.h"
+#include "GPositionLine.h"
+#include "Clipping.h"
+
+#include "StrokeFilling.h"
 
 
 using namespace BresenhamAlgos; 
@@ -44,6 +47,7 @@ inline BresenhamAlgos::MainWinForm::MainWinForm(void)
 	items->Add(circleItem);
 	items->Add(ellipseItem);
 	items->Add(strokeFillItem);
+	items->Add(clippingItem);
 
 	// Default selection
 	lineItem->PerformClick();
@@ -71,7 +75,7 @@ inline System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::O
 {
 
 	Graphics^ gr = Graphics::FromImage(bm);
-	//draw_dot(gr, e->Location.X, e->Location.Y, colorDialog->Color, 2);
+	draw_dot(gr, e->Location.X, e->Location.Y, colorDialog->Color, 2);
 
 	points[currentClicks] = Point(e->Location.X, e->Location.Y);
 
@@ -79,8 +83,16 @@ inline System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::O
 	if (++currentClicks == maximumClicks) {
 		currentClicks = 0;
 
-		GShape^ newShape = formShape(1);
-		drawShape(gr, newShape);
+		if (strokeFillItem->Checked) {
+			StrokeFilling::fill(bm, colorDialog->Color, points[0]->X, points[0]->Y);
+		}
+		else if (clippingItem->Checked) {
+			clipLines();
+		}
+		else {
+			GShape^ newShape = formShape(1);
+			drawShape(gr, newShape);
+		}
 	}
 
 	delete gr;
@@ -289,9 +301,7 @@ GShape ^ BresenhamAlgos::MainWinForm::formShape(int depth)
 		int height = (int)numericHeight->Value;
 		shape = gcnew GEllipse(colorDialog->Color, depth, p1, width, height);
 	}
-	else if (strokeFillItem->Checked) {
-		shape = gcnew StrokeFill(colorDialog->Color, bm, p1);
-	}
+	
 	return shape;
 }
 // Draw shape
@@ -314,6 +324,43 @@ void BresenhamAlgos::MainWinForm::drawShape(GShape ^ shape)
 	drawShape(gr, shape);
 	delete gr;
 	pictureBox->Refresh();
+}
+
+void BresenhamAlgos::MainWinForm::clipLines()
+{
+	Clipping^ clip = gcnew Clipping(points[0], points[1]);
+	drawRect(points[0], points[1]);
+
+	List<GLine^>^ newLines = gcnew List<GLine^>();
+	for each (GShape^ shape in shapes) {
+		if (shape->GetType()->Equals(Type::GetType("GLine"))) {
+			LinePosition pos = clip->identifyPosition((GLine^)shape);
+			GLine^ newLine = gcnew GPositionLine((GLine^)shape, points[0], points[1], pos);
+			newLines->Add(newLine);
+		}
+	}
+
+	for each (GLine^ var in newLines)
+	{
+		drawShape(var);
+	}
+}
+
+void BresenhamAlgos::MainWinForm::drawRect(Point ^ a, Point ^ b)
+{
+	Graphics^ gr = Graphics::FromImage(bm);
+
+	gr->DrawRectangle(gcnew Pen(colorDialog->Color), 
+		System::Math::Min(a->X, b->X), System::Math::Min(a->Y, b->Y), 
+		System::Math::Abs(a->X - b->X), System::Math::Abs(a->Y - b->Y));
+
+
+	delete gr;
+	pictureBox->Refresh();
+}
+
+inline System::Void BresenhamAlgos::MainWinForm::clippingItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	itemChanged((ToolStripMenuItem^)sender, 2);
 }
 
 // Stroke filling with seed point
