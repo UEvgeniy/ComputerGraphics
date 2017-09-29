@@ -68,8 +68,9 @@ inline BresenhamAlgos::MainWinForm::~MainWinForm()
 // PictureBox is clicked (left and right)
 inline System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::Object ^ sender, MouseEventArgs ^ e)
 {
+
 	Graphics^ gr = Graphics::FromImage(bm);
-	draw_dot(gr, e->Location.X, e->Location.Y, colorDialog->Color, 2);
+	//draw_dot(gr, e->Location.X, e->Location.Y, colorDialog->Color, 2);
 
 	points[currentClicks] = Point(e->Location.X, e->Location.Y);
 
@@ -288,7 +289,7 @@ GShape ^ BresenhamAlgos::MainWinForm::formShape(int depth)
 		shape = gcnew GEllipse(colorDialog->Color, depth, p1, width, height);
 	}
 	else if (strokeFillItem->Checked) {
-		shape = gcnew StrokeFill(colorDialog->Color, p1);
+		shape = gcnew StrokeFill(colorDialog->Color, bm, p1);
 	}
 	return shape;
 }
