@@ -43,16 +43,28 @@ inline BresenhamAlgos::MainWinForm::MainWinForm(void)
 	points = gcnew List<Point>();
 
 	// Group of toolMenuItems (only one can be checked)
-	exclusiveItems = gcnew List<ToolStripMenuItem^>();
-	exclusiveItems->Add(lineItem);
-	exclusiveItems->Add(circleItem);
-	exclusiveItems->Add(ellipseItem);
-	exclusiveItems->Add(strokeFillItem);
-	exclusiveItems->Add(clippingItem);
-	exclusiveItems->Add(polygonItem);
+	// todo separate method
+	exclusiveShapes = gcnew List<ToolStripMenuItem^>();
+	exclusiveShapes->Add(lineItem);
+	exclusiveShapes->Add(circleItem);
+	exclusiveShapes->Add(ellipseItem);
+	exclusiveShapes->Add(strokeFillItem);
+	exclusiveShapes->Add(clippingItem);
+	exclusiveShapes->Add(polygonItem);
+
+	clippingMode = gcnew List<ToolStripMenuItem^>();
+	clippingMode->Add(initDataItem);
+	clippingMode->Add(colorizeItem);
+	clippingMode->Add(clipLinesItem);
+
+	
+
 
 	// Default selection
 	lineItem->PerformClick();
+	colorizeItem->PerformClick();
+
+	// Properties for labels
 	labelH->Text = "Height (max " + numericHeight->Maximum +"):";
 	labelW->Text = "Width (max " + numericWidth->Maximum + "):";
 
@@ -89,7 +101,7 @@ inline System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::O
 		
 		// Stroke filling
 		if (strokeFillItem->Checked) {
-			FillingAlgos::strokeWithSeedPoint(bm, colorDialog->Color, points[0].X, points[0].Y);
+			FillingAlgos::strokeWithSeedPoint(bm, colorDialog->Color, pictureBox, points[0].X, points[0].Y);
 		}
 		// Clipping
 		else if (clippingItem->Checked) {
@@ -150,15 +162,19 @@ inline System::Void BresenhamAlgos::MainWinForm::randomItem_Click(System::Object
 
 // Select line
 inline System::Void BresenhamAlgos::MainWinForm::lineItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
-	itemChanged((ToolStripMenuItem^)sender, 2);
+	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
+	maximumClicks = 2;
 }
 // Select circle
 inline System::Void BresenhamAlgos::MainWinForm::circleItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
-	itemChanged((ToolStripMenuItem^)sender, 2);
+	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
+	maximumClicks = 2;
 }
 // Select ellipse
 inline System::Void BresenhamAlgos::MainWinForm::ellipseItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
-	itemChanged((ToolStripMenuItem^)sender, 1);
+	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
+	maximumClicks = 1;
+	groupBox->Visible = ellipseItem->Checked;
 }
 // Select about
 inline System::Void BresenhamAlgos::MainWinForm::aboutItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
@@ -178,24 +194,18 @@ inline System::Void BresenhamAlgos::MainWinForm::clearItem_Click(System::Object 
 	pictureBox->Refresh();
 }
 // Universal method for changing checked property
-inline void BresenhamAlgos::MainWinForm::itemChanged(ToolStripMenuItem ^ item, int clicksToBuild) {
+inline void BresenhamAlgos::MainWinForm::itemChanged(List<ToolStripMenuItem^>^ list, ToolStripMenuItem ^ item) {
 
 	if (item->Checked) {
 		return;
 	}
 	points->Clear();
 
-	// different shapes required different number of clicks for drawing
-	maximumClicks = clicksToBuild;
-
 	// update checked state of items
-	for (int i = 0; i < exclusiveItems->Count; i++) {
-		exclusiveItems[i]->Checked = false;
+	for (int i = 0; i < list->Count; i++) {
+		list[i]->Checked = false;
 	}
 	item->Checked = true;
-
-	// if ellipse selected make groupBox visible
-	groupBox->Visible = ellipseItem->Checked;
 }
 // Color setting
 inline System::Void BresenhamAlgos::MainWinForm::colorItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
@@ -408,7 +418,7 @@ void BresenhamAlgos::MainWinForm::polygonBuild()
 }
 
 inline System::Void BresenhamAlgos::MainWinForm::clippingItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
-	itemChanged((ToolStripMenuItem^)sender, 2);
+	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
 }
 
 inline System::Void BresenhamAlgos::MainWinForm::xorItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
@@ -425,16 +435,28 @@ inline System::Void BresenhamAlgos::MainWinForm::xorItem_Click(System::Object ^ 
 		return;
 	}
 
-	FillingAlgos::XORfill(bm, colorDialog->Color, polygons, pictureBox);
+	FillingAlgos::XORfill(bm, colorDialog->Color, pictureBox->BackColor, polygons, pictureBox);
 	pictureBox->Refresh();
 
 }
 
 inline System::Void BresenhamAlgos::MainWinForm::polygonItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
-	itemChanged((ToolStripMenuItem^)sender, 100);
+	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
+}
+
+inline System::Void BresenhamAlgos::MainWinForm::initDataItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	itemChanged(clippingMode, (ToolStripMenuItem^)sender);
+}
+
+inline System::Void BresenhamAlgos::MainWinForm::colorizeItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	itemChanged(clippingMode, (ToolStripMenuItem^)sender);
+}
+
+inline System::Void BresenhamAlgos::MainWinForm::clipLinesItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	itemChanged(clippingMode, (ToolStripMenuItem^)sender);
 }
 
 // Stroke filling with seed point
 inline System::Void BresenhamAlgos::MainWinForm::strokeFillItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
-	itemChanged((ToolStripMenuItem^)sender, 1);
+	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
 }

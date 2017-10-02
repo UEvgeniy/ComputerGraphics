@@ -1,6 +1,7 @@
 #include "FillingAlgos.h"
-
+#include <cliext/map>
 using namespace System;
+using namespace cliext;
 
 bool FillingAlgos::canMoveRight(int x, int y, Color^ redrawnColor, Bitmap^ bm) {
 	if (x + 1 >= bm->Width)
@@ -39,7 +40,7 @@ FillingAlgos::FillingAlgos()
 {
 }
 
-void FillingAlgos::strokeWithSeedPoint(Bitmap ^ bm, Color  col, int x, int y)
+void FillingAlgos::strokeWithSeedPoint(Bitmap ^ bm, Color  col, PictureBox^ pb, int x, int y)
 {
 	Graphics^ gr = Graphics::FromImage(bm);
 	SolidBrush^ b = gcnew SolidBrush(col);
@@ -80,6 +81,9 @@ void FillingAlgos::strokeWithSeedPoint(Bitmap ^ bm, Color  col, int x, int y)
 			gr->FillRectangle(b, curX, curY, 1, 1);
 		} while (canMoveLeft(curX--, curY, redrawnCol, bm));
 		curX++;
+		
+		pb->Refresh();
+		System::Threading::Thread::Sleep(10);
 
 
 		// Go down
@@ -94,19 +98,23 @@ void FillingAlgos::strokeWithSeedPoint(Bitmap ^ bm, Color  col, int x, int y)
 	}
 }
 
-void FillingAlgos::XORfill(Bitmap ^ bm, Color col, List<GPolygon^>^ polygons, PictureBox^ pb)
+void FillingAlgos::XORfill(Bitmap ^ bm, Color paint, Color default, List<GPolygon^>^ polygons, PictureBox^ pb)
 {
 	Bitmap^ backup = bm->Clone(Rectangle(0, 0, bm->Width, bm->Height), bm->PixelFormat);
 	//List<Tuple<int, int>^>^ pixels = polygons[0]->getPixels();
 	Graphics^ gr = Graphics::FromImage(bm);
-	SolidBrush^ br = gcnew SolidBrush(col);
-	SolidBrush^ def = gcnew SolidBrush(Color::White);
+	SolidBrush^ br = gcnew SolidBrush(paint);
+	SolidBrush^ def = gcnew SolidBrush(default);
 
 	for each (GPolygon^ polygon in polygons) {
 
 		List<GLine^>^ edges = polygon->getEdges(); // ->GetRange(0, 2);
-
 		array<int>^ crossed = gcnew array<int>(polygon->getTops()->Count);
+		
+		map<int, int>^ myMap = gcnew map<int, int>();
+		for each (Point p in polygon->getTops()) {
+			myMap->insert(map<int, int>::make_value(p.Y, 0));
+		}
 
 		for each (GLine^ line in edges)
 		{
@@ -115,21 +123,28 @@ void FillingAlgos::XORfill(Bitmap ^ bm, Color col, List<GPolygon^>^ polygons, Pi
 
 				int y = dots[i]->Item2;
 
+				if (dots[i]->Item2 == Math::Max(line->getFirst()->Y, line->getSecond()->Y)) {
+					continue;
+				}
+
 				// if next pixel is border too
 				if (dots->Contains(gcnew Tuple<int, int>(dots[i]->Item1 + 1, y))) {
 					continue;
 				}
 
 				// count how many times top crossed edges
-				for (int j = 0; j < polygon->getTops()->Count; j++) {
-					if (polygon->getTops()[j].Y == y) {
-						crossed[j]++;
-					}
+				if (myMap->find(y) != myMap->end()) {
+					myMap[y]++;
 				}
+				//for (int j = 0; j < polygon->getTops()->Count; j++) {
+				//	if (polygon->getTops()[j].Y == y) {
+				//		crossed[j]++;
+				//	}
+				//}
 
 				for (int x = dots[i]->Item1 + 1; x < bm->Width; x++) {
 
-					if (bm->GetPixel(x, y).ToArgb() != col.ToArgb()) {
+					if (bm->GetPixel(x, y).ToArgb() != paint.ToArgb()) {
 						gr->FillRectangle(br, x, y, 1, 1);
 					}
 					else {
@@ -140,13 +155,13 @@ void FillingAlgos::XORfill(Bitmap ^ bm, Color col, List<GPolygon^>^ polygons, Pi
 			}
 		}
 
-		List<Point>^ tops = polygon->getTops();
+		/*List<Point>^ tops = polygon->getTops();
 		for (int i = 0; i < tops->Count; i++) {
-			// todo hash map
-			if (crossed[i] % 2 == 0) {
+			if (myMap[tops[i].Y] % 2 == 0) {
+				myMap[tops[i].Y]++;
 				continue;
 			}
-
+			
 			for (int x = tops[i].X + 1; x < bm->Width; x++) {
 
 				if (bm->GetPixel(x, tops[i].Y).ToArgb() != col.ToArgb()) {
@@ -158,6 +173,7 @@ void FillingAlgos::XORfill(Bitmap ^ bm, Color col, List<GPolygon^>^ polygons, Pi
 			}
 			pb->Refresh();
 		}
+		*/
 
 		delete gr;
 	}

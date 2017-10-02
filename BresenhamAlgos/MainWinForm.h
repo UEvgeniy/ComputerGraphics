@@ -2,7 +2,7 @@
 #include "GShape.h"
 
 // Sem 1. Bresenham Algos. 
-// Sem 2. Filling, clipping.
+// Sem 2. Filling (Stroke + XOR), clipping.
 // Made by Evgeniy Urnyshev. Moscow, 2017.
 namespace BresenhamAlgos {
 
@@ -78,12 +78,21 @@ namespace BresenhamAlgos {
 	private:
 		Bitmap^ bm;
 		List<Point>^ points;
-		List<ToolStripMenuItem^>^ exclusiveItems;
+		List<ToolStripMenuItem^>^ exclusiveShapes;
+		List<ToolStripMenuItem^>^ clippingMode;
 		List<GShape^>^ shapes;
 		int maximumClicks; // number of clicks required on pictureBox for drawing shape
+
 	private: System::Windows::Forms::ToolStripMenuItem^  strokeFillItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  clippingItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  xorItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  clippingDisplayModeToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  initDataItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  colorizeItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  clipLinesItem;
+
+
+
 	private: System::Windows::Forms::ToolStripMenuItem^  polygonItem;
 
 #pragma region Windows Form Designer generated code
@@ -104,6 +113,7 @@ namespace BresenhamAlgos {
 			this->lineItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->circleItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->ellipseItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->polygonItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->fillItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->strokeFillItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->xorItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -111,6 +121,10 @@ namespace BresenhamAlgos {
 			this->clearItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->settingsItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->colorItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->clippingDisplayModeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->initDataItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->colorizeItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->clipLinesItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->helpItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->aboutItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->pictureBox = (gcnew System::Windows::Forms::PictureBox());
@@ -126,7 +140,6 @@ namespace BresenhamAlgos {
 			this->saveDialog = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->openDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->toolTip = (gcnew System::Windows::Forms::ToolTip(this->components));
-			this->polygonItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->menuStrip->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox))->BeginInit();
 			this->contextMenuStrip->SuspendLayout();
@@ -190,7 +203,7 @@ namespace BresenhamAlgos {
 			});
 			this->addItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"addItem.Image")));
 			this->addItem->Name = L"addItem";
-			this->addItem->Size = System::Drawing::Size(211, 30);
+			this->addItem->Size = System::Drawing::Size(183, 30);
 			this->addItem->Text = L"Add shape";
 			// 
 			// lineItem
@@ -224,6 +237,14 @@ namespace BresenhamAlgos {
 			this->ellipseItem->Text = L"Ellipse";
 			this->ellipseItem->Click += gcnew System::EventHandler(this, &MainWinForm::ellipseItem_Click);
 			// 
+			// polygonItem
+			// 
+			this->polygonItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"polygonItem.Image")));
+			this->polygonItem->Name = L"polygonItem";
+			this->polygonItem->Size = System::Drawing::Size(254, 30);
+			this->polygonItem->Text = L"Polygon";
+			this->polygonItem->Click += gcnew System::EventHandler(this, &MainWinForm::polygonItem_Click);
+			// 
 			// fillItem
 			// 
 			this->fillItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
@@ -232,7 +253,7 @@ namespace BresenhamAlgos {
 			});
 			this->fillItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"fillItem.Image")));
 			this->fillItem->Name = L"fillItem";
-			this->fillItem->Size = System::Drawing::Size(211, 30);
+			this->fillItem->Size = System::Drawing::Size(183, 30);
 			this->fillItem->Text = L"Fill";
 			// 
 			// strokeFillItem
@@ -245,6 +266,7 @@ namespace BresenhamAlgos {
 			// 
 			// xorItem
 			// 
+			this->xorItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"xorItem.Image")));
 			this->xorItem->Name = L"xorItem";
 			this->xorItem->Size = System::Drawing::Size(274, 30);
 			this->xorItem->Text = L"XOR";
@@ -254,7 +276,7 @@ namespace BresenhamAlgos {
 			// 
 			this->clippingItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"clippingItem.Image")));
 			this->clippingItem->Name = L"clippingItem";
-			this->clippingItem->Size = System::Drawing::Size(211, 30);
+			this->clippingItem->Size = System::Drawing::Size(183, 30);
 			this->clippingItem->Text = L"Clipping";
 			this->clippingItem->Click += gcnew System::EventHandler(this, &MainWinForm::clippingItem_Click);
 			// 
@@ -262,13 +284,16 @@ namespace BresenhamAlgos {
 			// 
 			this->clearItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"clearItem.Image")));
 			this->clearItem->Name = L"clearItem";
-			this->clearItem->Size = System::Drawing::Size(211, 30);
+			this->clearItem->Size = System::Drawing::Size(183, 30);
 			this->clearItem->Text = L"Clear filed";
 			this->clearItem->Click += gcnew System::EventHandler(this, &MainWinForm::clearItem_Click);
 			// 
 			// settingsItem
 			// 
-			this->settingsItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->colorItem });
+			this->settingsItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->colorItem,
+					this->clippingDisplayModeToolStripMenuItem
+			});
 			this->settingsItem->Name = L"settingsItem";
 			this->settingsItem->Size = System::Drawing::Size(88, 29);
 			this->settingsItem->Text = L"Settings";
@@ -277,9 +302,44 @@ namespace BresenhamAlgos {
 			// 
 			this->colorItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"colorItem.Image")));
 			this->colorItem->Name = L"colorItem";
-			this->colorItem->Size = System::Drawing::Size(152, 30);
+			this->colorItem->Size = System::Drawing::Size(276, 30);
 			this->colorItem->Text = L"Color...";
 			this->colorItem->Click += gcnew System::EventHandler(this, &MainWinForm::colorItem_Click);
+			// 
+			// clippingDisplayModeToolStripMenuItem
+			// 
+			this->clippingDisplayModeToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+				this->initDataItem,
+					this->colorizeItem, this->clipLinesItem
+			});
+			this->clippingDisplayModeToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"clippingDisplayModeToolStripMenuItem.Image")));
+			this->clippingDisplayModeToolStripMenuItem->Name = L"clippingDisplayModeToolStripMenuItem";
+			this->clippingDisplayModeToolStripMenuItem->Size = System::Drawing::Size(276, 30);
+			this->clippingDisplayModeToolStripMenuItem->Text = L"Clipping display mode";
+			// 
+			// initDataItem
+			// 
+			this->initDataItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"initDataItem.Image")));
+			this->initDataItem->Name = L"initDataItem";
+			this->initDataItem->Size = System::Drawing::Size(211, 30);
+			this->initDataItem->Text = L"Initial data";
+			this->initDataItem->Click += gcnew System::EventHandler(this, &MainWinForm::initDataItem_Click);
+			// 
+			// colorizeItem
+			// 
+			this->colorizeItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"colorizeItem.Image")));
+			this->colorizeItem->Name = L"colorizeItem";
+			this->colorizeItem->Size = System::Drawing::Size(211, 30);
+			this->colorizeItem->Text = L"Colorize lines";
+			this->colorizeItem->Click += gcnew System::EventHandler(this, &MainWinForm::colorizeItem_Click);
+			// 
+			// clipLinesItem
+			// 
+			this->clipLinesItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"clipLinesItem.Image")));
+			this->clipLinesItem->Name = L"clipLinesItem";
+			this->clipLinesItem->Size = System::Drawing::Size(211, 30);
+			this->clipLinesItem->Text = L"Clip lines";
+			this->clipLinesItem->Click += gcnew System::EventHandler(this, &MainWinForm::clipLinesItem_Click);
 			// 
 			// helpItem
 			// 
@@ -340,6 +400,7 @@ namespace BresenhamAlgos {
 			this->groupBox->TabIndex = 2;
 			this->groupBox->TabStop = false;
 			this->groupBox->Text = L"Ellipse properties";
+			this->groupBox->Visible = false;
 			// 
 			// exchangeButton
 			// 
@@ -415,13 +476,6 @@ namespace BresenhamAlgos {
 			this->toolTip->InitialDelay = 2000;
 			this->toolTip->ReshowDelay = 10000;
 			// 
-			// polygonItem
-			// 
-			this->polygonItem->Name = L"polygonItem";
-			this->polygonItem->Size = System::Drawing::Size(254, 30);
-			this->polygonItem->Text = L"Polygon";
-			this->polygonItem->Click += gcnew System::EventHandler(this, &MainWinForm::polygonItem_Click);
-			// 
 			// MainWinForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
@@ -487,10 +541,11 @@ namespace BresenhamAlgos {
 			System::Void openDialog_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e);
 			System::Void randomItem_Click(System::Object^  sender, System::EventArgs^  e);
 #pragma endregion
+
 #pragma region User methods
 
 			// Universal method for changing checked property
-			void itemChanged(ToolStripMenuItem^ item, int clicksToBuild);
+			void itemChanged(List<ToolStripMenuItem^>^ list, ToolStripMenuItem^ item);
 			// Length between 2 dots
 			int length(Point^ a, Point^ b);
 			// Drawing dot
@@ -513,5 +568,8 @@ namespace BresenhamAlgos {
 private: System::Void clippingItem_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void xorItem_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void polygonItem_Click(System::Object^  sender, System::EventArgs^  e);
+private: System::Void initDataItem_Click(System::Object^  sender, System::EventArgs^  e);
+private: System::Void colorizeItem_Click(System::Object^  sender, System::EventArgs^  e);
+private: System::Void clipLinesItem_Click(System::Object^  sender, System::EventArgs^  e);
 };
 }

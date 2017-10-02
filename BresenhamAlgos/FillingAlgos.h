@@ -16,8 +16,8 @@ private:
 
 
 public:
-	static void strokeWithSeedPoint(Bitmap^ bm, Color col, int x, int y);
-	static void XORfill(Bitmap^ bm, Color col, List<GPolygon^>^ polygons, PictureBox^ pb);
+	static void strokeWithSeedPoint(Bitmap^ bm, Color col, PictureBox^ pb, int x, int y);
+	static void XORfill(Bitmap^ bm, Color col, Color default, List<GPolygon^>^ polygons, PictureBox^ pb);
 
 };
 
