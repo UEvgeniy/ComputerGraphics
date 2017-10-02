@@ -1,5 +1,12 @@
 #include "GShape.h"
 
+GShape::GShape()
+{
+	setColor(Color::Black);
+	setDepth(2);
+}
+
+
 GShape::GShape(Color  col, int depth)
 {
 	setColor(col);

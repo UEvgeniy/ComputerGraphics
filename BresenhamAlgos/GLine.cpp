@@ -3,6 +3,7 @@
 
 GLine::GLine(Color  col, int depth, Point ^ p1, Point ^ p2) : GShape(col, depth)
 {
+	pixels = gcnew List<Tuple<int, int>^>();
 	this->_p1 = p1;
 	this->_p2 = p2;
 }
@@ -20,7 +21,10 @@ Point ^ GLine::getSecond()
 }
 
 inline List<Tuple<int, int>^>^ GLine::getPixels() {
-	return Bresenham::buildLine(_p1->X, _p1->Y, _p2->X, _p2->Y);
+	if (pixels->Count != 0) {
+		return pixels;
+	}
+	return pixels = Bresenham::buildLine(_p1->X, _p1->Y, _p2->X, _p2->Y);
 }
 
 System::String ^ GLine::ToString()

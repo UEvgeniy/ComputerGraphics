@@ -49,6 +49,10 @@ List<System::Tuple<int, int>^>^ Bresenham::buildLine(int x1, int y1, int x2, int
 		e += 2 * dy;
 		i++;
 	}
+	Tuple<int, int>^ end = gcnew Tuple<int, int>(x2, y2);
+	if (!res->Contains(end)) {
+		res->Add(end);
+	}
 
 	return res;
 }
@@ -100,7 +104,6 @@ List<System::Tuple<int, int>^>^ Bresenham::buildCircle(int xc, int yc, int xk, i
 		d += 2 * x - 2 * y + 2;
 	
 	}
-
 	return res;
 }
 

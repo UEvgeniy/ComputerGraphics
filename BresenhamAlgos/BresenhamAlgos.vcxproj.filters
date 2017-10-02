@@ -45,14 +45,17 @@
     <ClCompile Include="GShapeParser.cpp">
       <Filter>Source Files\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="StrokeFilling.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Clipping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GPositionLine.cpp">
       <Filter>Source Files\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="GPolygon.cpp">
+      <Filter>Source Files\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="FillingAlgos.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,14 +83,17 @@
     <ClInclude Include="GShapeParser.h">
       <Filter>Header Files\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="StrokeFilling.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Clipping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GPositionLine.h">
       <Filter>Header Files\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="GPolygon.h">
+      <Filter>Header Files\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="FillingAlgos.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

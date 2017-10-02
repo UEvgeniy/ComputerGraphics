@@ -77,15 +77,14 @@ namespace BresenhamAlgos {
 		// User variables
 	private:
 		Bitmap^ bm;
-		array<Point^>^ points;
-		List<ToolStripMenuItem^>^ items;
+		List<Point>^ points;
+		List<ToolStripMenuItem^>^ exclusiveItems;
 		List<GShape^>^ shapes;
 		int maximumClicks; // number of clicks required on pictureBox for drawing shape
 	private: System::Windows::Forms::ToolStripMenuItem^  strokeFillItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  clippingItem;
-
-
-			 int currentClicks; // current number of clicks
+	private: System::Windows::Forms::ToolStripMenuItem^  xorItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  polygonItem;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -107,6 +106,7 @@ namespace BresenhamAlgos {
 			this->ellipseItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->fillItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->strokeFillItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->xorItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->clippingItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->clearItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->settingsItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -126,6 +126,7 @@ namespace BresenhamAlgos {
 			this->saveDialog = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->openDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->toolTip = (gcnew System::Windows::Forms::ToolTip(this->components));
+			this->polygonItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->menuStrip->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox))->BeginInit();
 			this->contextMenuStrip->SuspendLayout();
@@ -183,9 +184,9 @@ namespace BresenhamAlgos {
 			// 
 			// addItem
 			// 
-			this->addItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+			this->addItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
 				this->lineItem, this->circleItem,
-					this->ellipseItem
+					this->ellipseItem, this->polygonItem
 			});
 			this->addItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"addItem.Image")));
 			this->addItem->Name = L"addItem";
@@ -225,7 +226,10 @@ namespace BresenhamAlgos {
 			// 
 			// fillItem
 			// 
-			this->fillItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->strokeFillItem });
+			this->fillItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->strokeFillItem,
+					this->xorItem
+			});
 			this->fillItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"fillItem.Image")));
 			this->fillItem->Name = L"fillItem";
 			this->fillItem->Size = System::Drawing::Size(211, 30);
@@ -238,6 +242,13 @@ namespace BresenhamAlgos {
 			this->strokeFillItem->Size = System::Drawing::Size(274, 30);
 			this->strokeFillItem->Text = L"Stroke with seed point";
 			this->strokeFillItem->Click += gcnew System::EventHandler(this, &MainWinForm::strokeFillItem_Click);
+			// 
+			// xorItem
+			// 
+			this->xorItem->Name = L"xorItem";
+			this->xorItem->Size = System::Drawing::Size(274, 30);
+			this->xorItem->Text = L"XOR";
+			this->xorItem->Click += gcnew System::EventHandler(this, &MainWinForm::xorItem_Click);
 			// 
 			// clippingItem
 			// 
@@ -404,6 +415,13 @@ namespace BresenhamAlgos {
 			this->toolTip->InitialDelay = 2000;
 			this->toolTip->ReshowDelay = 10000;
 			// 
+			// polygonItem
+			// 
+			this->polygonItem->Name = L"polygonItem";
+			this->polygonItem->Size = System::Drawing::Size(254, 30);
+			this->polygonItem->Text = L"Polygon";
+			this->polygonItem->Click += gcnew System::EventHandler(this, &MainWinForm::polygonItem_Click);
+			// 
 			// MainWinForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
@@ -487,9 +505,13 @@ namespace BresenhamAlgos {
 
 			void drawRect(Point^ a, Point^ b);
 
+			void polygonBuild();
+
 #pragma endregion
 	
 			
 private: System::Void clippingItem_Click(System::Object^  sender, System::EventArgs^  e);
+private: System::Void xorItem_Click(System::Object^  sender, System::EventArgs^  e);
+private: System::Void polygonItem_Click(System::Object^  sender, System::EventArgs^  e);
 };
 }

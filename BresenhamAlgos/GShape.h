@@ -9,6 +9,7 @@ protected:
 	Color _color;
 	int _depth;
 
+	GShape();
 	GShape(Color col, int depth);
 
 public:

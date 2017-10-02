@@ -7,11 +7,12 @@
 #include "GLine.h"
 #include "GEllipse.h"
 #include "GCircle.h"
+#include "GPolygon.h"
 #include "GShapeParser.h"
 #include "GPositionLine.h"
 #include "Clipping.h"
 
-#include "StrokeFilling.h"
+#include "FillingAlgos.h"
 
 
 using namespace BresenhamAlgos; 
@@ -39,15 +40,16 @@ inline BresenhamAlgos::MainWinForm::MainWinForm(void)
 	shapes = gcnew List<GShape^>();
 
 	// Points clicked on the picture box
-	points = gcnew array<Point^>(3);
+	points = gcnew List<Point>();
 
 	// Group of toolMenuItems (only one can be checked)
-	items = gcnew List<ToolStripMenuItem^>();
-	items->Add(lineItem);
-	items->Add(circleItem);
-	items->Add(ellipseItem);
-	items->Add(strokeFillItem);
-	items->Add(clippingItem);
+	exclusiveItems = gcnew List<ToolStripMenuItem^>();
+	exclusiveItems->Add(lineItem);
+	exclusiveItems->Add(circleItem);
+	exclusiveItems->Add(ellipseItem);
+	exclusiveItems->Add(strokeFillItem);
+	exclusiveItems->Add(clippingItem);
+	exclusiveItems->Add(polygonItem);
 
 	// Default selection
 	lineItem->PerformClick();
@@ -73,19 +75,23 @@ inline BresenhamAlgos::MainWinForm::~MainWinForm()
 // PictureBox is clicked (left and right)
 inline System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::Object ^ sender, MouseEventArgs ^ e)
 {
-
 	Graphics^ gr = Graphics::FromImage(bm);
-	draw_dot(gr, e->Location.X, e->Location.Y, colorDialog->Color, 2);
+	//points[points->Count - 1] = Point(e->Location.X, e->Location.Y);
+	points->Add(Point(e->Location.X, e->Location.Y));
 
-	points[currentClicks] = Point(e->Location.X, e->Location.Y);
+	//Polygon drawing
+	if (polygonItem->Checked) {
+		polygonBuild();
+	}
 
 	// If all required dots added to pictureBox, then build shape
-	if (++currentClicks == maximumClicks) {
-		currentClicks = 0;
-
+	if (points->Count == maximumClicks) {
+		
+		// Stroke filling
 		if (strokeFillItem->Checked) {
-			StrokeFilling::fill(bm, colorDialog->Color, points[0]->X, points[0]->Y);
+			FillingAlgos::strokeWithSeedPoint(bm, colorDialog->Color, points[0].X, points[0].Y);
 		}
+		// Clipping
 		else if (clippingItem->Checked) {
 			clipLines();
 		}
@@ -93,7 +99,11 @@ inline System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::O
 			GShape^ newShape = formShape(1);
 			drawShape(gr, newShape);
 		}
+		points->Clear();
 	}
+
+	// todo interrupt
+	draw_dot(gr, e->Location.X, e->Location.Y, colorDialog->Color, 2);
 
 	delete gr;
 	pictureBox->Refresh();
@@ -160,8 +170,8 @@ inline System::Void BresenhamAlgos::MainWinForm::clearItem_Click(System::Object 
 	Graphics^ gr = Graphics::FromImage(bm);
 
 	shapes->Clear();
+	points->Clear();
 
-	currentClicks = 0;
 	gr->Clear(pictureBox->BackColor);
 
 	delete gr;
@@ -173,14 +183,14 @@ inline void BresenhamAlgos::MainWinForm::itemChanged(ToolStripMenuItem ^ item, i
 	if (item->Checked) {
 		return;
 	}
-	currentClicks = 0;
+	points->Clear();
 
 	// different shapes required different number of clicks for drawing
 	maximumClicks = clicksToBuild;
 
 	// update checked state of items
-	for (int i = 0; i < items->Count; i++) {
-		items[i]->Checked = false;
+	for (int i = 0; i < exclusiveItems->Count; i++) {
+		exclusiveItems[i]->Checked = false;
 	}
 	item->Checked = true;
 
@@ -286,20 +296,33 @@ GShape ^ BresenhamAlgos::MainWinForm::formShape(int depth)
 {
 	// variable just to make code more readable
 	Point^ p1 = points[0];
-	Point^ p2 = points[1];
 
 	GShape^ shape;
 
 	if (lineItem->Checked) {
+		Point^ p2 = points[1];
 		shape = gcnew GLine(colorDialog->Color, depth, p1, p2);
 	}
 	else if (circleItem->Checked) {
+		Point^ p2 = points[1];
 		shape = gcnew GCircle(colorDialog->Color, depth, p1, p2);
 	}
 	else if (ellipseItem->Checked) {
 		int width = (int)numericWidth->Value;
 		int height = (int)numericHeight->Value;
 		shape = gcnew GEllipse(colorDialog->Color, depth, p1, width, height);
+	}
+	else if (polygonItem->Checked)  {
+
+		List<Point>^ list = gcnew List<Point>();
+		for (int i = 0; i < points->Count - 1; i++)
+		{
+			
+			list->Add(points[i]);
+		}
+		shape = gcnew GPolygon(list);
+		maximumClicks = 100;
+			
 	}
 	
 	return shape;
@@ -333,6 +356,7 @@ void BresenhamAlgos::MainWinForm::clipLines()
 
 	List<GLine^>^ newLines = gcnew List<GLine^>();
 	for each (GShape^ shape in shapes) {
+		// todo get type better
 		if (shape->GetType()->Equals(Type::GetType("GLine"))) {
 			LinePosition pos = clip->identifyPosition((GLine^)shape);
 			GLine^ newLine = gcnew GPositionLine((GLine^)shape, points[0], points[1], pos);
@@ -359,8 +383,55 @@ void BresenhamAlgos::MainWinForm::drawRect(Point ^ a, Point ^ b)
 	pictureBox->Refresh();
 }
 
+void BresenhamAlgos::MainWinForm::polygonBuild()
+{
+	if (points->Count == 1) {
+		return;
+	}
+	Point^ initial = points[0];
+	Point^ current = points[points->Count - 1];
+
+	// todo magic number
+	if (Math::Abs(initial->X - current->X) > 5
+		|| Math::Abs(initial->Y - current->Y) > 5) {
+		return;
+	}
+
+	if (1 < points->Count && points->Count < 4) {
+		MessageBox::Show("Minimum 3 tops required for building polygon", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		points->Clear();
+		return;
+	}
+
+	maximumClicks = points->Count;
+	
+}
+
 inline System::Void BresenhamAlgos::MainWinForm::clippingItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	itemChanged((ToolStripMenuItem^)sender, 2);
+}
+
+inline System::Void BresenhamAlgos::MainWinForm::xorItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	List<GPolygon^>^ polygons = gcnew List<GPolygon^>();
+	for each (GShape^ shape in shapes)
+	{
+		if (shape->GetType()->Equals(Type::GetType("GPolygon"))) {
+			polygons->Add((GPolygon^)shape);
+		}
+	}
+	if (polygons->Count == 0) {
+		MessageBox::Show("At least one polygon required for XOR filling", "Error", 
+			MessageBoxButtons::OK, MessageBoxIcon::Error);
+		return;
+	}
+
+	FillingAlgos::XORfill(bm, colorDialog->Color, polygons, pictureBox);
+	pictureBox->Refresh();
+
+}
+
+inline System::Void BresenhamAlgos::MainWinForm::polygonItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	itemChanged((ToolStripMenuItem^)sender, 100);
 }
 
 // Stroke filling with seed point
