@@ -13,6 +13,8 @@ GPositionLine::GPositionLine(GLine ^ line, Point ^ a, Point ^ b, LinePosition po
 	this->_pos = pos;
 	this->_line = line;
 	this->setDepth(_line->getDepth() + 1);
+	this->_color = pos == LinePosition::Visible ? Color::Green : 
+		(pos == LinePosition::Invisible ? Color::Red : Color::Yellow);
 }
 
 List<Tuple<int, int>^>^ GPositionLine::getPixels()
@@ -20,15 +22,12 @@ List<Tuple<int, int>^>^ GPositionLine::getPixels()
 	List<Tuple<int, int>^>^ res = gcnew List<Tuple<int, int>^>();
 
 	if (_pos == LinePosition::Visible) {
-		this->setColor(Color::Green);
 		res = _line->getPixels();
 	}
 	else if (_pos == LinePosition::Invisible) {
-		this->setColor(Color::Red);
 		res = _line->getPixels();
 	}
 	else {
-		this->setColor(Color::Yellow);
 		List<Tuple<int, int>^>^ tmp = _line->getPixels();
 		for each (Tuple<int, int>^ t in tmp)
 		{

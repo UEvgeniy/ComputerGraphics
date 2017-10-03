@@ -8,6 +8,8 @@
 #include "GEllipse.h"
 #include "GCircle.h"
 #include "GPolygon.h"
+#include "GRectangle.h"
+
 #include "GShapeParser.h"
 #include "GPositionLine.h"
 #include "Clipping.h"
@@ -38,6 +40,7 @@ inline BresenhamAlgos::MainWinForm::MainWinForm(void)
 
 	// Drawed shapes
 	shapes = gcnew List<GShape^>();
+	clippingShapes = gcnew List<GShape^>();
 
 	// Points clicked on the picture box
 	points = gcnew List<Point>();
@@ -110,6 +113,7 @@ inline System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::O
 		else {
 			GShape^ newShape = formShape(1);
 			drawShape(gr, newShape);
+			shapes->Add(newShape);
 		}
 		points->Clear();
 	}
@@ -152,7 +156,7 @@ inline System::Void BresenhamAlgos::MainWinForm::randomItem_Click(System::Object
 	shape->setDepth(rand->Next(1, 3));
 	shape->setColor(Color::FromArgb(rand->Next(255), rand->Next(255), rand->Next(255)));
 
-
+	shapes->Add(shape);
 	drawShape(shape);
 
 }
@@ -206,6 +210,7 @@ inline void BresenhamAlgos::MainWinForm::itemChanged(List<ToolStripMenuItem^>^ l
 		list[i]->Checked = false;
 	}
 	item->Checked = true;
+	groupBox->Visible = ellipseItem->Checked;
 }
 // Color setting
 inline System::Void BresenhamAlgos::MainWinForm::colorItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
@@ -331,8 +336,7 @@ GShape ^ BresenhamAlgos::MainWinForm::formShape(int depth)
 			list->Add(points[i]);
 		}
 		shape = gcnew GPolygon(list);
-		maximumClicks = 100;
-			
+		maximumClicks = 100;		
 	}
 	
 	return shape;
@@ -343,7 +347,6 @@ void BresenhamAlgos::MainWinForm::drawShape(Graphics^ gr, GShape^ shape)
 	List<Tuple<int, int>^>^ drawn_dots;
 
 	drawn_dots = shape->getPixels();
-	shapes->Add(shape);
 
 	// Draw all points from list
 	for (int i = 0; i < drawn_dots->Count; i++) {
@@ -361,23 +364,53 @@ void BresenhamAlgos::MainWinForm::drawShape(GShape ^ shape)
 
 void BresenhamAlgos::MainWinForm::clipLines()
 {
-	Clipping^ clip = gcnew Clipping(points[0], points[1]);
-	drawRect(points[0], points[1]);
+	//Add rectangle
+	GRectangle^ rect;
+	if (points->Count == 0) {
+		rect =  (GRectangle^)clippingShapes[0];
+	}
+	else {
+		rect = gcnew GRectangle(points[0], points[1]);
+	}
+	clippingShapes->Clear();
+	clippingShapes->Add(rect);
 
-	List<GLine^>^ newLines = gcnew List<GLine^>();
+	// Start clip all lines
+	Clipping^ clip = gcnew Clipping(rect->getLeftTop(), rect->getRightButtom());
+
 	for each (GShape^ shape in shapes) {
-		// todo get type better
-		if (shape->GetType()->Equals(Type::GetType("GLine"))) {
-			LinePosition pos = clip->identifyPosition((GLine^)shape);
-			GLine^ newLine = gcnew GPositionLine((GLine^)shape, points[0], points[1], pos);
-			newLines->Add(newLine);
+		LinePosition pos = clip->identifyPosition((GLine^)shape);
+		GLine^ newLine = gcnew GPositionLine((GLine^)shape, rect->getLeftTop(), rect->getRightButtom(), pos);
+		clippingShapes->Add(newLine);
+	}
+
+	// Drawing shapes (according to 3 modes)
+	Graphics^ gr = Graphics::FromImage(bm);
+	gr->Clear(pictureBox->BackColor);
+	// todo modify logic
+	if (initDataItem->Checked) {
+		for each (GShape^ s in shapes) {
+			drawShape(gr, s);
+		}
+		drawShape(clippingShapes[0]);
+	}
+	else if (colorizeItem->Checked) {
+		for each (GShape^ s in shapes) {
+			drawShape(gr, s);
+		}
+		for each (GShape^ s in clippingShapes) {
+			drawShape(gr, s);
 		}
 	}
-
-	for each (GLine^ var in newLines)
-	{
-		drawShape(var);
+	else if (clipLinesItem->Checked) {
+		for each (GShape^ s in clippingShapes){
+			if (s->getColor().ToArgb() != Color::Red.ToArgb()) {
+				drawShape(gr, s);
+			}
+		}
 	}
+	delete gr;
+	pictureBox->Refresh();
 }
 
 void BresenhamAlgos::MainWinForm::drawRect(Point ^ a, Point ^ b)
@@ -418,6 +451,37 @@ void BresenhamAlgos::MainWinForm::polygonBuild()
 }
 
 inline System::Void BresenhamAlgos::MainWinForm::clippingItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	
+	if (clippingItem->Checked) {
+		return;
+	}
+
+	// Find all lines
+	List<GLine^>^ onlyLines = gcnew List<GLine^>();
+	for each (GShape^ shape in shapes) {
+		// todo get type better
+		if (shape->GetType()->Equals(Type::GetType("GLine"))) {
+			onlyLines->Add((GLine^)shape);
+		}
+	}
+
+	if (onlyLines->Count < shapes->Count) {
+		if (MessageBox::Show("The field contains another figures except lines. Do you want to delete them to continue?", 
+			"Clear", MessageBoxButtons::YesNo, MessageBoxIcon::Question) != System::Windows::Forms::DialogResult::Yes) {
+			return;
+		}
+
+		clearItem->PerformClick();
+		Graphics^ gr = Graphics::FromImage(bm);
+		for each (GLine^ line in onlyLines)
+		{
+			shapes->Add(line);
+			drawShape(gr, line);
+		}
+		delete gr;
+		pictureBox->Refresh();
+	}
+
 	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
 }
 
@@ -446,14 +510,23 @@ inline System::Void BresenhamAlgos::MainWinForm::polygonItem_Click(System::Objec
 
 inline System::Void BresenhamAlgos::MainWinForm::initDataItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	itemChanged(clippingMode, (ToolStripMenuItem^)sender);
+	if (clippingItem->Checked && clippingShapes->Count > 0) {
+		clipLines();
+	}
 }
 
 inline System::Void BresenhamAlgos::MainWinForm::colorizeItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	itemChanged(clippingMode, (ToolStripMenuItem^)sender);
+	if (clippingItem->Checked && clippingShapes->Count > 0) {
+		clipLines();
+	}
 }
 
 inline System::Void BresenhamAlgos::MainWinForm::clipLinesItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	itemChanged(clippingMode, (ToolStripMenuItem^)sender);
+	if (clippingItem->Checked && clippingShapes->Count > 0) {
+		clipLines();
+	}
 }
 
 // Stroke filling with seed point

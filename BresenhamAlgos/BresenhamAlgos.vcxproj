@@ -139,6 +139,7 @@
     <ClCompile Include="GLine.cpp" />
     <ClCompile Include="GPolygon.cpp" />
     <ClCompile Include="GPositionLine.cpp" />
+    <ClCompile Include="GRectangle.cpp" />
     <ClCompile Include="GShape.cpp" />
     <ClCompile Include="GShapeParser.cpp" />
     <ClCompile Include="MainWinForm.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="GLine.h" />
     <ClInclude Include="GPolygon.h" />
     <ClInclude Include="GPositionLine.h" />
+    <ClInclude Include="GRectangle.h" />
     <ClInclude Include="GShape.h" />
     <ClInclude Include="GShapeParser.h" />
     <ClInclude Include="MainWinForm.h">

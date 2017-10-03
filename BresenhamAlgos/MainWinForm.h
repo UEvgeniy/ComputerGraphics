@@ -81,6 +81,7 @@ namespace BresenhamAlgos {
 		List<ToolStripMenuItem^>^ exclusiveShapes;
 		List<ToolStripMenuItem^>^ clippingMode;
 		List<GShape^>^ shapes;
+		List<GShape^>^ clippingShapes;
 		int maximumClicks; // number of clicks required on pictureBox for drawing shape
 
 	private: System::Windows::Forms::ToolStripMenuItem^  strokeFillItem;
@@ -571,5 +572,6 @@ private: System::Void polygonItem_Click(System::Object^  sender, System::EventAr
 private: System::Void initDataItem_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void colorizeItem_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void clipLinesItem_Click(System::Object^  sender, System::EventArgs^  e);
+
 };
 }

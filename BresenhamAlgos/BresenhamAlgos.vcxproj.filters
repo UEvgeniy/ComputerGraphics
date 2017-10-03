@@ -57,6 +57,9 @@
     <ClCompile Include="FillingAlgos.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GRectangle.cpp">
+      <Filter>Source Files\Shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWinForm.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="FillingAlgos.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GRectangle.h">
+      <Filter>Header Files\Shapes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

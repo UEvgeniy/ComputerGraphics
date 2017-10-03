@@ -175,7 +175,8 @@ void FillingAlgos::XORfill(Bitmap ^ bm, Color paint, Color default, List<GPolygo
 		}
 		*/
 
-		delete gr;
+		
 	}
+	delete gr;
 }
 
