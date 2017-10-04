@@ -133,16 +133,42 @@
   <ItemGroup>
     <ClCompile Include="AboutForm.cpp" />
     <ClCompile Include="Bresenham.cpp" />
+    <ClCompile Include="Clipping.cpp" />
+    <ClCompile Include="Filling.cpp" />
+    <ClCompile Include="GCircle.cpp" />
+    <ClCompile Include="GEllipse.cpp" />
+    <ClCompile Include="GLine.cpp" />
+    <ClCompile Include="GPolygon.cpp" />
+    <ClCompile Include="GPositionLine.cpp" />
+    <ClCompile Include="GRectangle.cpp" />
+    <ClCompile Include="GShape.cpp" />
+    <ClCompile Include="GShapeParser.cpp" />
     <ClCompile Include="MainWinForm.cpp" />
+    <ClCompile Include="FillingAlgos.cpp" />
+    <ClCompile Include="StrokeWithSeedPoint.cpp" />
+    <ClCompile Include="XOR.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Bresenham.h" />
+    <ClInclude Include="Clipping.h" />
+    <ClInclude Include="Filling.h" />
+    <ClInclude Include="GCircle.h" />
+    <ClInclude Include="GEllipse.h" />
+    <ClInclude Include="GLine.h" />
+    <ClInclude Include="GPolygon.h" />
+    <ClInclude Include="GPositionLine.h" />
+    <ClInclude Include="GRectangle.h" />
+    <ClInclude Include="GShape.h" />
+    <ClInclude Include="GShapeParser.h" />
     <ClInclude Include="MainWinForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="FillingAlgos.h" />
+    <ClInclude Include="StrokeWithSeedPoint.h" />
+    <ClInclude Include="XOR.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutForm.resx">

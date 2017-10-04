@@ -1,16 +1,16 @@
 #include "Bresenham.h"
-#include <math.h>
 
-List<pair>^ Bresenham::buildLine(int x1, int y1, int x2, int y2)
+
+List<System::Tuple<int, int>^>^ Bresenham::buildLine(int x1, int y1, int x2, int y2)
 {
-	List<pair>^ res = gcnew List<pair>();
+	List<System::Tuple<int, int>^>^ res = gcnew List<System::Tuple<int, int>^>();
 
 	int x = x1;
 	int y = y1;
 
 	// deltas
-	int dx = abs(x2 - x1);
-	int dy = abs(y2 - y1);
+	int dx = Math::Abs(x2 - x1);
+	int dy = Math::Abs(y2 - y1);
 
 	int s1 = sign(x2 - x1);
 	int s2 = sign(y2 - y1); 
@@ -49,13 +49,17 @@ List<pair>^ Bresenham::buildLine(int x1, int y1, int x2, int y2)
 		e += 2 * dy;
 		i++;
 	}
+	Tuple<int, int>^ end = gcnew Tuple<int, int>(x2, y2);
+	if (!res->Contains(end)) {
+		res->Add(end);
+	}
 
 	return res;
 }
 
-List<pair>^ Bresenham::buildCircle(int xc, int yc, int xk, int yk)
+List<System::Tuple<int, int>^>^ Bresenham::buildCircle(int xc, int yc, int xk, int yk)
 {
-	List<pair>^ res = gcnew List<pair>();
+	List<System::Tuple<int, int>^>^ res = gcnew List<System::Tuple<int, int>^>();
 
 	int x1 = xc;
 	int x2 = xk;
@@ -66,7 +70,7 @@ List<pair>^ Bresenham::buildCircle(int xc, int yc, int xk, int yk)
 	int dy = y1 - y2;
 
 	int x = 0;
-	int y = sqrt(dx * dx + dy * dy);
+	int y = Math::Sqrt(dx * dx + dy * dy);
 	int d = 2 * (1 - y);
 	int lim = 0;
 
@@ -100,73 +104,69 @@ List<pair>^ Bresenham::buildCircle(int xc, int yc, int xk, int yk)
 		d += 2 * x - 2 * y + 2;
 	
 	}
-
 	return res;
 }
 
-List<pair>^ Bresenham::buildEllipse(int xc, int yc, int r1, int r2)
+List<System::Tuple<int, int>^>^ Bresenham::buildEllipse(int xc, int yc, int r1, int r2)
 {
-	List<pair>^ res = gcnew List<pair>();
+	List<System::Tuple<int, int>^>^ res = gcnew List<System::Tuple<int, int>^>();
 
-	int a = 0;
-	int b = r2;
+	int x = 0;
+	int y = r2;
 
 	int h2 = r1* r1; // sqr of height
 	int w2 = r2 * r2; // sqr of width
-	int d = 4 * w2 * ((a + 1) * (a + 1)) + h2 * ((2 * b - 1) * (2 * b - 1)) - 4 * h2 * w2; // delta
+	int d = 4 * w2 * ((x + 1) * (x + 1)) + h2 * ((2 * y - 1) * (2 * y - 1)) - 4 * h2 * w2; // delta
 
 	// when x increases every iter (y sometimes decreases)
-	while (h2 * (2 * b - 1) > 2 * w2 * (a + 1)) {
+	while (h2 * (2 * y - 1) > 2 * w2 * (x + 1)) {
 
 		// reflect from the first quadrant to the rest
-		res->Add(make_pair(xc + a, yc + b));
-		res->Add(make_pair(xc + a, yc - b));
-		res->Add(make_pair(xc - a, yc - b));
-		res->Add(make_pair(xc - a, yc + b));
+		res->Add(make_pair(xc + x, yc + y));
+		res->Add(make_pair(xc + x, yc - y));
+		res->Add(make_pair(xc - x, yc - y));
+		res->Add(make_pair(xc - x, yc + y));
 
 		if (d < 0) {
-			a++;
-			d += 4 * w2 * (2 * a + 3);
+			x++;
+			d += 4 * w2 * (2 * x + 3);
 		}
 		else {
-			a++;
-			d = d - 8 * h2 * (b - 1) + 4 * w2 * (2 * a + 3);
-			b--;
+			x++;
+			d = d - 8 * h2 * (y - 1) + 4 * w2 * (2 * x + 3);
+			y--;
 		}
 	}
 
-	d = w2 * ((2 * a + 1) * (2 * a + 1)) + 4 * h2 * ((b + 1) * (b + 1)) - 4 * h2 * w2; 
+	d = w2 * ((2 * x + 1) * (2 * x + 1)) + 4 * h2 * ((y + 1) * (y + 1)) - 4 * h2 * w2; 
 
 	// when y decrease every iter (x sometimes increases)
-	while (b + 1 != 0) 
+	while (y + 1 != 0) 
 	{
 		// reflect from the first quadrant to the rest
-		res->Add(make_pair(xc + a, yc + b));
-		res->Add(make_pair(xc + a, yc - b));
-		res->Add(make_pair(xc - a, yc - b));
-		res->Add(make_pair(xc - a, yc + b));
+		res->Add(make_pair(xc + x, yc + y));
+		res->Add(make_pair(xc + x, yc - y));
+		res->Add(make_pair(xc - x, yc - y));
+		res->Add(make_pair(xc - x, yc + y));
 		if (d < 0) 
 		{
-			b--;
-			d += 4 * h2 * (2 * b + 3);
+			y--;
+			d += 4 * h2 * (2 * y + 3);
 		}
 		else 
 		{
-			b--;
-			d = d - 8 * w2 * (a + 1) + 4 * h2 * (2 * b + 3);
-			a++;
+			y--;
+			d = d - 8 * w2 * (x + 1) + 4 * h2 * (2 * y + 3);
+			x++;
 		}
 	}
 
 	return res;
 }
 
-pair Bresenham::make_pair(int x, int y)
+System::Tuple<int, int>^ make_pair(int x, int y)
 {
-	pair pp = gcnew array<int>(2);
-	pp[0] = x;
-	pp[1] = y;
-	return pp;
+	return gcnew System::Tuple<int, int>(x, y);
 }
 
 // returns -1, 0 or	1 in dependence of value sign

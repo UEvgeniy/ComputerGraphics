@@ -2,7 +2,7 @@
 
 namespace BresenhamAlgos {
 
-	using namespace System;
+	//using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
 	using namespace System::Windows::Forms;
@@ -52,7 +52,7 @@ namespace BresenhamAlgos {
 			// 
 			// button
 			// 
-			this->button->Location = System::Drawing::Point(13, 261);
+			this->button->Location = System::Drawing::Point(12, 348);
 			this->button->Name = L"button";
 			this->button->Size = System::Drawing::Size(473, 34);
 			this->button->TabIndex = 3;
@@ -68,16 +68,14 @@ namespace BresenhamAlgos {
 				static_cast<System::Byte>(204)));
 			this->label->Location = System::Drawing::Point(9, 68);
 			this->label->Name = L"label";
-			this->label->Size = System::Drawing::Size(344, 154);
+			this->label->Size = System::Drawing::Size(451, 264);
 			this->label->TabIndex = 1;
-			this->label->Text = L"All requested functionality is implemented:\r\n1. Drawing lines, circles and ellips"
-				L"es \r\nusing Brasenham Algos;\r\n2. ...\r\n\r\n© 2017 Evgeniy Urnyshev\r\nAll rights reser"
-				L"ved.";
+			this->label->Text = resources->GetString(L"label.Text");
 			// 
 			// pictureBox1
 			// 
 			this->pictureBox1->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.Image")));
-			this->pictureBox1->Location = System::Drawing::Point(359, 68);
+			this->pictureBox1->Location = System::Drawing::Point(359, 54);
 			this->pictureBox1->Name = L"pictureBox1";
 			this->pictureBox1->Size = System::Drawing::Size(140, 141);
 			this->pictureBox1->SizeMode = System::Windows::Forms::PictureBoxSizeMode::StretchImage;
@@ -99,16 +97,16 @@ namespace BresenhamAlgos {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(509, 307);
+			this->ClientSize = System::Drawing::Size(509, 394);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->pictureBox1);
 			this->Controls->Add(this->label);
 			this->Controls->Add(this->button);
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MaximizeBox = false;
-			this->MaximumSize = System::Drawing::Size(531, 363);
+			this->MaximumSize = System::Drawing::Size(531, 450);
 			this->MinimizeBox = false;
-			this->MinimumSize = System::Drawing::Size(531, 363);
+			this->MinimumSize = System::Drawing::Size(531, 450);
 			this->Name = L"AboutForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"About";
