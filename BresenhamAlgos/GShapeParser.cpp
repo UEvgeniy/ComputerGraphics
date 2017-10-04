@@ -2,32 +2,6 @@
 
 using namespace System::Text::RegularExpressions;
 
-array<Point>^ GShapeParser::parseTwoPoints(String ^ props, String^ type)
-{
-	// Example {X=223,Y=94};{X=293,Y=203}
-
-	Regex^ shapeRegex = gcnew Regex(
-		"{X=(?<x1>[0-9]+),Y=(?<y1>[0-9]+)};{X=(?<x2>[0-9]+),Y=(?<y2>[0-9]+)}"
-	);
-
-	Match^ m = shapeRegex->Match(props);
-	array<Point>^ res = gcnew array<Point>(2);
-
-	if (m->Success) {
-		res[0] = Point(
-			Int32::Parse(m->Groups["x1"]->Value), 
-			Int32::Parse(m->Groups["y1"]->Value));
-		res[1] = Point(
-			Int32::Parse(m->Groups["x2"]->Value),
-			Int32::Parse(m->Groups["y2"]->Value));
-	}
-	else {
-		throw gcnew ArgumentException(String::Format("Incorrect {0} properies: {1}", type, props));
-	}
-
-	return res;
-}
-
 
 GEllipse ^ GShapeParser::parseEllipse(String ^ props)
 {
@@ -58,6 +32,38 @@ GEllipse ^ GShapeParser::parseEllipse(String ^ props)
 	return res;
 }
 
+
+List<Point> ^ GShapeParser::parsePoints(String ^ props, String^ type)
+{
+	// Example {X=351,Y=125};{X=211,Y=120};{X=182,Y=230};{X=289,Y=303};{X=272,Y=207};
+
+	List<Point> ^ res = gcnew List<Point>();
+
+	if (props->Equals(String::Empty)) {
+		return res;
+	}
+
+	Regex^ shapeRegex = gcnew Regex(
+		"{X=(?<x1>[0-9]+),Y=(?<y1>[0-9]+)};(?<rest>\.*)"
+	);
+
+	Match^ m = shapeRegex->Match(props);
+
+	if (m->Success) {
+		res->Add(Point(
+			Int32::Parse(m->Groups["x1"]->Value),
+			Int32::Parse(m->Groups["y1"]->Value)));
+		res->AddRange(parsePoints(m->Groups["rest"]->Value, type));
+		
+	}
+	else {
+		throw gcnew ArgumentException(String::Format("Incorrect {0} properies: {1}", type, props));
+	}
+
+	return res;
+
+}
+
 GShapeParser::GShapeParser()
 {
 }
@@ -67,11 +73,12 @@ GShape^ GShapeParser::parse(String ^ str)
 	// Line; -16777216; 1; {X = 223, Y = 94}; {X = 293, Y = 203}
 	// Circle; -65536; 1; {X = 513, Y = 205}; {X = 437, Y = 253}
 	// Ellipse; -16744193; 1; {X = 343, Y = 332}; 40; 20
+	// Polygon; -16777216; 1; {X=351,Y=125};{X=211,Y=120};{X=182,Y=230};{X=289,Y=303};{X=272,Y=207};
 
 	GShape^ res;
 	
 	Regex^ shapeRegex = gcnew Regex(
-		"(?<type>Line|Circle|Ellipse);(?<color>-?[0-9]{1,8});(?<depth>[0-9]+);(?<props>.+)"
+		"(?<type>Line|Circle|Ellipse|Polygon);(?<color>-?[0-9]{1,8});(?<depth>[0-9]+);(?<props>.+)"
 	);
 
 	Match^ m = shapeRegex->Match(str);
@@ -82,15 +89,28 @@ GShape^ GShapeParser::parse(String ^ str)
 		String^ props = m->Groups["props"]->Value;
 
 		if (type->Equals("Line")) {
-			array<Point>^ points = parseTwoPoints(props, type);
+			List<Point>^ points = parsePoints(props, type);
+			if (points->Count != 2) {
+				throw gcnew ArgumentException("Incorrect number of points in: " + str);
+			}
 			res = gcnew GLine(points[0], points[1]);
 		}
 		else if (type->Equals("Circle")) {
-			array<Point>^ points = parseTwoPoints(props, type);
+			List<Point>^ points = parsePoints(props, type);
+			if (points->Count != 2) {
+				throw gcnew ArgumentException("Incorrect number of points in: " + str);
+			}
 			res = gcnew GCircle(points[0], points[1]);
 		}
 		else if (type->Equals("Ellipse")) {
 			res = parseEllipse(props);
+		}
+		else if (type->Equals("Polygon")) {
+			List<Point>^ points = parsePoints(props, type);
+			if (points->Count < 3) {
+				throw gcnew ArgumentException("Incorrect number of points in: " + str);
+			}
+			res = gcnew GPolygon(points);
 		}
 		else {
 			throw gcnew ArgumentException("Incorrect type of shape");

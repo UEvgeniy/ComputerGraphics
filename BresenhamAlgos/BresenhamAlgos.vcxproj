@@ -134,6 +134,7 @@
     <ClCompile Include="AboutForm.cpp" />
     <ClCompile Include="Bresenham.cpp" />
     <ClCompile Include="Clipping.cpp" />
+    <ClCompile Include="Filling.cpp" />
     <ClCompile Include="GCircle.cpp" />
     <ClCompile Include="GEllipse.cpp" />
     <ClCompile Include="GLine.cpp" />
@@ -144,6 +145,8 @@
     <ClCompile Include="GShapeParser.cpp" />
     <ClCompile Include="MainWinForm.cpp" />
     <ClCompile Include="FillingAlgos.cpp" />
+    <ClCompile Include="StrokeWithSeedPoint.cpp" />
+    <ClCompile Include="XOR.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutForm.h">
@@ -151,6 +154,7 @@
     </ClInclude>
     <ClInclude Include="Bresenham.h" />
     <ClInclude Include="Clipping.h" />
+    <ClInclude Include="Filling.h" />
     <ClInclude Include="GCircle.h" />
     <ClInclude Include="GEllipse.h" />
     <ClInclude Include="GLine.h" />
@@ -163,6 +167,8 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="FillingAlgos.h" />
+    <ClInclude Include="StrokeWithSeedPoint.h" />
+    <ClInclude Include="XOR.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutForm.resx">

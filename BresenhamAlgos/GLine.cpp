@@ -29,7 +29,7 @@ inline List<Tuple<int, int>^>^ GLine::getPixels() {
 
 System::String ^ GLine::ToString()
 {
-	return System::String::Format("Line;{0};{1};{2};{3}",
+	return System::String::Format("Line;{0};{1};{2};{3};",
 		this->_color.ToArgb(),
 		this->_depth,
 		this->_p1,

@@ -19,6 +19,12 @@
     <Filter Include="Header Files\Shapes">
       <UniqueIdentifier>{8f698386-6973-4785-b555-c0462341799e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Filling">
+      <UniqueIdentifier>{c680dbba-ebd3-416d-a923-e2674e6b514c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Filling">
+      <UniqueIdentifier>{97888acf-4581-444f-9ebe-6a66f1284c06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWinForm.cpp">
@@ -54,11 +60,20 @@
     <ClCompile Include="GPolygon.cpp">
       <Filter>Source Files\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="FillingAlgos.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GRectangle.cpp">
       <Filter>Source Files\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="FillingAlgos.cpp">
+      <Filter>Source Files\Filling</Filter>
+    </ClCompile>
+    <ClCompile Include="Filling.cpp">
+      <Filter>Source Files\Filling</Filter>
+    </ClCompile>
+    <ClCompile Include="StrokeWithSeedPoint.cpp">
+      <Filter>Source Files\Filling</Filter>
+    </ClCompile>
+    <ClCompile Include="XOR.cpp">
+      <Filter>Source Files\Filling</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,11 +110,20 @@
     <ClInclude Include="GPolygon.h">
       <Filter>Header Files\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="FillingAlgos.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GRectangle.h">
       <Filter>Header Files\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="FillingAlgos.h">
+      <Filter>Header Files\Filling</Filter>
+    </ClInclude>
+    <ClInclude Include="Filling.h">
+      <Filter>Header Files\Filling</Filter>
+    </ClInclude>
+    <ClInclude Include="StrokeWithSeedPoint.h">
+      <Filter>Header Files\Filling</Filter>
+    </ClInclude>
+    <ClInclude Include="XOR.h">
+      <Filter>Header Files\Filling</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

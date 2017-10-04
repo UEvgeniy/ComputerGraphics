@@ -48,8 +48,16 @@ List<Tuple<int, int>^>^ GPolygon::getPixels()
 
 System::String ^ GPolygon::ToString()
 {
-	throw gcnew System::NotImplementedException();
-	// TODO: insert return statement here
+	String^ res = System::String::Format("Polygon;{0};{1};",
+		this->_color.ToArgb(),
+		this->_depth
+	);
+	for each (Point p in tops)
+	{
+		res += p + ";";
+	}
+
+	return res;
 }
 
 

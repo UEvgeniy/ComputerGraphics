@@ -14,6 +14,9 @@
 #include "GPositionLine.h"
 #include "Clipping.h"
 
+#include "StrokeWithSeedPoint.h"
+#include "XOR.h"
+
 #include "FillingAlgos.h"
 
 
@@ -54,18 +57,22 @@ inline BresenhamAlgos::MainWinForm::MainWinForm(void)
 	exclusiveShapes->Add(strokeFillItem);
 	exclusiveShapes->Add(clippingItem);
 	exclusiveShapes->Add(polygonItem);
+	exclusiveShapes->Add(xorItem);
 
 	clippingMode = gcnew List<ToolStripMenuItem^>();
 	clippingMode->Add(initDataItem);
 	clippingMode->Add(colorizeItem);
 	clippingMode->Add(clipLinesItem);
 
-	
-
+	delays = gcnew List<ToolStripMenuItem^>();
+	delays->Add(noDelayItem);
+	delays->Add(ms10Item);
+	delays->Add(ms500Item);
 
 	// Default selection
 	lineItem->PerformClick();
 	colorizeItem->PerformClick();
+	noDelayItem->PerformClick();
 
 	// Properties for labels
 	labelH->Text = "Height (max " + numericHeight->Maximum +"):";
@@ -99,16 +106,23 @@ inline System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::O
 		polygonBuild();
 	}
 
+	if (!strokeFillItem->Checked && !xorItem->Checked) {
+		draw_dot(gr, e->Location.X, e->Location.Y, 2);
+	}
+
 	// If all required dots added to pictureBox, then build shape
 	if (points->Count == maximumClicks) {
 		
 		// Stroke filling
 		if (strokeFillItem->Checked) {
-			FillingAlgos::strokeWithSeedPoint(bm, colorDialog->Color, pictureBox, points[0].X, points[0].Y);
+			StrokeWithSeedPoint^ f = gcnew StrokeWithSeedPoint(bm, colorDialog->Color, points[0].X, points[0].Y);
+			f->onIteration += gcnew IterationDel(this, &BresenhamAlgos::MainWinForm::IterationHandler);
+			f->fill();
 		}
 		// Clipping
 		else if (clippingItem->Checked) {
 			clipLines();
+
 		}
 		else {
 			GShape^ newShape = formShape(1);
@@ -117,9 +131,7 @@ inline System::Void BresenhamAlgos::MainWinForm::pictureBox_MouseClick(System::O
 		}
 		points->Clear();
 	}
-
-	// todo interrupt
-	draw_dot(gr, e->Location.X, e->Location.Y, colorDialog->Color, 2);
+	
 
 	delete gr;
 	pictureBox->Refresh();
@@ -278,6 +290,7 @@ inline System::Void BresenhamAlgos::MainWinForm::openDialog_FileOk(System::Objec
 	Graphics^ gr = Graphics::FromImage(bm);
 	for each (GShape^ shape in newList)
 	{
+		shapes->Add(shape);
 		drawShape(gr, shape);
 	}
 
@@ -302,10 +315,16 @@ int BresenhamAlgos::MainWinForm::length(Point ^ a, Point ^ b)
 	int len = (int)Math::Sqrt(Math::Pow(a->X - b->X, 2) + Math::Pow(a->Y - b->Y, 2));
 	return len;
 }
+
 // Draw dot (rectangle)
 inline void BresenhamAlgos::MainWinForm::draw_dot(Graphics^ gr, int x, int y, Color col, int size) {
 	gr->FillRectangle(gcnew SolidBrush(col), x - (size / 2), y - (size / 2), size, size);
 }
+void BresenhamAlgos::MainWinForm::draw_dot(Graphics ^ gr, int x, int y, int size)
+{
+	draw_dot(gr, x, y, Color::Black, size);
+}
+
 // Get Shape by menuItems and points
 GShape ^ BresenhamAlgos::MainWinForm::formShape(int depth)
 {
@@ -335,7 +354,7 @@ GShape ^ BresenhamAlgos::MainWinForm::formShape(int depth)
 			
 			list->Add(points[i]);
 		}
-		shape = gcnew GPolygon(list);
+		shape = gcnew GPolygon(list, colorDialog->Color, depth);
 		maximumClicks = 100;		
 	}
 	
@@ -450,6 +469,23 @@ void BresenhamAlgos::MainWinForm::polygonBuild()
 	
 }
 
+void BresenhamAlgos::MainWinForm::IterationHandler(bool needShapesRedraw)
+{
+	if (delay == 0) {
+		return;
+	}
+
+	System::Threading::Thread::Sleep(delay);
+	
+	if (needShapesRedraw) {
+		for each (GShape^ s in shapes) {
+			drawShape(s);
+		}
+	}
+
+	pictureBox->Refresh();
+}
+
 inline System::Void BresenhamAlgos::MainWinForm::clippingItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	
 	if (clippingItem->Checked) {
@@ -483,6 +519,7 @@ inline System::Void BresenhamAlgos::MainWinForm::clippingItem_Click(System::Obje
 	}
 
 	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
+	maximumClicks = 2;
 }
 
 inline System::Void BresenhamAlgos::MainWinForm::xorItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
@@ -499,13 +536,22 @@ inline System::Void BresenhamAlgos::MainWinForm::xorItem_Click(System::Object ^ 
 		return;
 	}
 
-	FillingAlgos::XORfill(bm, colorDialog->Color, pictureBox->BackColor, polygons, pictureBox);
+	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
+
+
+	XOR^ xor = gcnew XOR(bm, colorDialog->Color, pictureBox->BackColor, polygons);
+	xor->onIteration += gcnew IterationDel(this, &BresenhamAlgos::MainWinForm::IterationHandler);
+	xor->fill();
+	for each (GShape^ s in shapes) {
+		drawShape(s);
+	}
 	pictureBox->Refresh();
 
 }
 
 inline System::Void BresenhamAlgos::MainWinForm::polygonItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
+	maximumClicks = 100;
 }
 
 inline System::Void BresenhamAlgos::MainWinForm::initDataItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
@@ -532,4 +578,8 @@ inline System::Void BresenhamAlgos::MainWinForm::clipLinesItem_Click(System::Obj
 // Stroke filling with seed point
 inline System::Void BresenhamAlgos::MainWinForm::strokeFillItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
 	itemChanged(exclusiveShapes, (ToolStripMenuItem^)sender);
+	maximumClicks = 1;
+	if (ms500Item->Checked) {
+		ms10Item->PerformClick();
+	}
 }

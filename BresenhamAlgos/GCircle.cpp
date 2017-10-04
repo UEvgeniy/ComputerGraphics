@@ -17,7 +17,7 @@ List<Tuple<int, int>^>^ GCircle::getPixels()
 
 System::String ^ GCircle::ToString()
 {
-	return System::String::Format("Circle;{0};{1};{2};{3}",
+	return System::String::Format("Circle;{0};{1};{2};{3};",
 		this->_color.ToArgb(),
 		this->_depth,
 		this->_center,

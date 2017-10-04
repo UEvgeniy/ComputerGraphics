@@ -3,12 +3,14 @@
 #include "GLine.h"
 #include "GCircle.h"
 #include "GEllipse.h"
+#include "GPolygon.h"
 
 ref class GShapeParser
 {
 private:
-	array<Point>^ parseTwoPoints(String^ props, String^ type);
 	GEllipse^ parseEllipse(String^ props);
+	List<Point>^ parsePoints(String^ props, String^ type);
+
 
 public:
 

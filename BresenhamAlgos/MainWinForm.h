@@ -3,6 +3,21 @@
 
 // Sem 1. Bresenham Algos. 
 // Sem 2. Filling (Stroke + XOR), clipping.
+
+// Shapes Example:
+	// Line;-16777216;1;{X=132,Y=202};{X=275,Y=355};
+	// Circle; -65536; 1; {X = 419, Y = 142}; {X = 360, Y = 250};
+	// Ellipse; -16744193; 1; {X = 486, Y = 326}; 40; 20
+	// Polygon; -16711872; 1; {X = 387, Y = 297}; {X = 304, Y = 294}; {X = 401, Y = 370}; {X = 317, Y = 381};
+
+// In order to build polygon you should select Polygon menu item and put all tops. In order to finish 
+// building click on the first top
+
+// In oreder to clip line by window, draw some lines, select Clipping menu item, 
+// draw rectangle by two points and select Display clipping mode
+
+
+
 // Made by Evgeniy Urnyshev. Moscow, 2017.
 namespace BresenhamAlgos {
 
@@ -78,10 +93,15 @@ namespace BresenhamAlgos {
 	private:
 		Bitmap^ bm;
 		List<Point>^ points;
+
 		List<ToolStripMenuItem^>^ exclusiveShapes;
 		List<ToolStripMenuItem^>^ clippingMode;
+		List<ToolStripMenuItem^>^ delays;
+
 		List<GShape^>^ shapes;
 		List<GShape^>^ clippingShapes;
+
+		int delay;
 		int maximumClicks; // number of clicks required on pictureBox for drawing shape
 
 	private: System::Windows::Forms::ToolStripMenuItem^  strokeFillItem;
@@ -91,6 +111,13 @@ namespace BresenhamAlgos {
 	private: System::Windows::Forms::ToolStripMenuItem^  initDataItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  colorizeItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  clipLinesItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  fillIterationDelayToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  noDelayItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  ms10Item;
+	private: System::Windows::Forms::ToolStripMenuItem^  ms500Item;
+
+
+
 
 
 
@@ -122,6 +149,10 @@ namespace BresenhamAlgos {
 			this->clearItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->settingsItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->colorItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->fillIterationDelayToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->noDelayItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->ms10Item = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->ms500Item = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->clippingDisplayModeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->initDataItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->colorizeItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -291,9 +322,9 @@ namespace BresenhamAlgos {
 			// 
 			// settingsItem
 			// 
-			this->settingsItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+			this->settingsItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
 				this->colorItem,
-					this->clippingDisplayModeToolStripMenuItem
+					this->fillIterationDelayToolStripMenuItem, this->clippingDisplayModeToolStripMenuItem
 			});
 			this->settingsItem->Name = L"settingsItem";
 			this->settingsItem->Size = System::Drawing::Size(88, 29);
@@ -306,6 +337,38 @@ namespace BresenhamAlgos {
 			this->colorItem->Size = System::Drawing::Size(276, 30);
 			this->colorItem->Text = L"Color...";
 			this->colorItem->Click += gcnew System::EventHandler(this, &MainWinForm::colorItem_Click);
+			// 
+			// fillIterationDelayToolStripMenuItem
+			// 
+			this->fillIterationDelayToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+				this->noDelayItem,
+					this->ms10Item, this->ms500Item
+			});
+			this->fillIterationDelayToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"fillIterationDelayToolStripMenuItem.Image")));
+			this->fillIterationDelayToolStripMenuItem->Name = L"fillIterationDelayToolStripMenuItem";
+			this->fillIterationDelayToolStripMenuItem->Size = System::Drawing::Size(276, 30);
+			this->fillIterationDelayToolStripMenuItem->Text = L"Fill iteration delay";
+			// 
+			// noDelayItem
+			// 
+			this->noDelayItem->Name = L"noDelayItem";
+			this->noDelayItem->Size = System::Drawing::Size(234, 30);
+			this->noDelayItem->Text = L"No delay";
+			this->noDelayItem->Click += gcnew System::EventHandler(this, &MainWinForm::noDelayItem_Click);
+			// 
+			// ms10Item
+			// 
+			this->ms10Item->Name = L"ms10Item";
+			this->ms10Item->Size = System::Drawing::Size(234, 30);
+			this->ms10Item->Text = L"10 ms (Stroke fill)";
+			this->ms10Item->Click += gcnew System::EventHandler(this, &MainWinForm::ms10Item_Click);
+			// 
+			// ms500Item
+			// 
+			this->ms500Item->Name = L"ms500Item";
+			this->ms500Item->Size = System::Drawing::Size(234, 30);
+			this->ms500Item->Text = L"500 ms (XOR fill)";
+			this->ms500Item->Click += gcnew System::EventHandler(this, &MainWinForm::ms500Item_Click);
 			// 
 			// clippingDisplayModeToolStripMenuItem
 			// 
@@ -322,7 +385,7 @@ namespace BresenhamAlgos {
 			// 
 			this->initDataItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"initDataItem.Image")));
 			this->initDataItem->Name = L"initDataItem";
-			this->initDataItem->Size = System::Drawing::Size(211, 30);
+			this->initDataItem->Size = System::Drawing::Size(201, 30);
 			this->initDataItem->Text = L"Initial data";
 			this->initDataItem->Click += gcnew System::EventHandler(this, &MainWinForm::initDataItem_Click);
 			// 
@@ -330,7 +393,7 @@ namespace BresenhamAlgos {
 			// 
 			this->colorizeItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"colorizeItem.Image")));
 			this->colorizeItem->Name = L"colorizeItem";
-			this->colorizeItem->Size = System::Drawing::Size(211, 30);
+			this->colorizeItem->Size = System::Drawing::Size(201, 30);
 			this->colorizeItem->Text = L"Colorize lines";
 			this->colorizeItem->Click += gcnew System::EventHandler(this, &MainWinForm::colorizeItem_Click);
 			// 
@@ -338,7 +401,7 @@ namespace BresenhamAlgos {
 			// 
 			this->clipLinesItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"clipLinesItem.Image")));
 			this->clipLinesItem->Name = L"clipLinesItem";
-			this->clipLinesItem->Size = System::Drawing::Size(211, 30);
+			this->clipLinesItem->Size = System::Drawing::Size(201, 30);
 			this->clipLinesItem->Text = L"Clip lines";
 			this->clipLinesItem->Click += gcnew System::EventHandler(this, &MainWinForm::clipLinesItem_Click);
 			// 
@@ -353,7 +416,7 @@ namespace BresenhamAlgos {
 			// 
 			this->aboutItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"aboutItem.Image")));
 			this->aboutItem->Name = L"aboutItem";
-			this->aboutItem->Size = System::Drawing::Size(159, 30);
+			this->aboutItem->Size = System::Drawing::Size(211, 30);
 			this->aboutItem->Text = L"About...";
 			this->aboutItem->Click += gcnew System::EventHandler(this, &MainWinForm::aboutItem_Click);
 			// 
@@ -496,7 +559,7 @@ namespace BresenhamAlgos {
 			this->MinimumSize = System::Drawing::Size(900, 500);
 			this->Name = L"MainWinForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-			this->Text = L"BresenhamAlgos";
+			this->Text = L"Seminar 2. Filling and Clipping. Evgeniy Urnyshev, BSE143-1.";
 			this->menuStrip->ResumeLayout(false);
 			this->menuStrip->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox))->EndInit();
@@ -550,6 +613,7 @@ namespace BresenhamAlgos {
 			// Length between 2 dots
 			int length(Point^ a, Point^ b);
 			// Drawing dot
+			void draw_dot(Graphics^ gr, int x, int y, int size);
 			void draw_dot(Graphics^ gr, int x, int y, Color col, int size);
 			// Get Shape by menuItems and points
 			GShape^ formShape(int depth);
@@ -563,6 +627,8 @@ namespace BresenhamAlgos {
 
 			void polygonBuild();
 
+			void IterationHandler(bool needShapesRedraw);
+
 #pragma endregion
 	
 			
@@ -573,5 +639,17 @@ private: System::Void initDataItem_Click(System::Object^  sender, System::EventA
 private: System::Void colorizeItem_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void clipLinesItem_Click(System::Object^  sender, System::EventArgs^  e);
 
+private: System::Void noDelayItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	itemChanged(delays, (ToolStripMenuItem^)sender);
+	delay = 0;
+}
+private: System::Void ms10Item_Click(System::Object^  sender, System::EventArgs^  e) {
+	itemChanged(delays, (ToolStripMenuItem^)sender);
+	delay = 10;
+}
+private: System::Void ms500Item_Click(System::Object^  sender, System::EventArgs^  e) {
+	itemChanged(delays, (ToolStripMenuItem^)sender);
+	delay = 500;
+}
 };
 }
